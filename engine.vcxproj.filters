@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\engine">
+      <UniqueIdentifier>{32B5D758-1E6D-19A6-8774-F201734BB496}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\engine\ImGui">
+      <UniqueIdentifier>{DCC7F3C6-C8C0-1219-F1F2-F79DDD4AF224}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\engine\audio">
+      <UniqueIdentifier>{D3F0AAC8-BFE9-C91A-E81B-AF9FD473A926}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\engine\core">
+      <UniqueIdentifier>{EA741D25-5600-8BE9-5F11-0EDECB1BE7E9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\engine\debug">
+      <UniqueIdentifier>{486DD8C8-3466-F71A-5D98-DC9F49F0D626}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\engine\events">
+      <UniqueIdentifier>{F66870E7-627F-6E7D-ABF6-F99E174C3F05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\engine\renderer">
+      <UniqueIdentifier>{388D297C-A4EE-068A-2D5C-4D3C99BC3D49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\engine\threads">
+      <UniqueIdentifier>{0CDB6438-F8BE-258E-611F-20E14D221010}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\engine\utils">
+      <UniqueIdentifier>{326414CA-1E5D-331C-478F-18A133E71228}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\platform">
+      <UniqueIdentifier>{41663D6D-2DC9-CC11-D64E-05C8C2909894}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\platform\GLFW">
+      <UniqueIdentifier>{2032A7C4-8C48-A55A-D5BF-307C411576E2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\platform\OpenGL">
+      <UniqueIdentifier>{555C82A0-C1BD-5FAE-4A2B-A660B68B966D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\platform\SDL">
+      <UniqueIdentifier>{B3CE33FE-9FC7-5250-C8F9-37D5B451325C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor">
+      <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\stb_image">
+      <UniqueIdentifier>{0DA0BA59-F998-D9AB-22CB-BE300E23B9B7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\engine.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\ImGui\ImGuiLayer.h">
+      <Filter>src\engine\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\ImGui\ImGuiRenderer.h">
+      <Filter>src\engine\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\audio\AudioDebugger.h">
+      <Filter>src\engine\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\audio\audioPlayer.h">
+      <Filter>src\engine\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\core\Application.h">
+      <Filter>src\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\core\EntryPoint.h">
+      <Filter>src\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\core\Keycodes.h">
+      <Filter>src\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\core\Layer.h">
+      <Filter>src\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\core\LayerStack.h">
+      <Filter>src\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\core\Log.h">
+      <Filter>src\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\core\Timestep.h">
+      <Filter>src\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\core\Window.h">
+      <Filter>src\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\core\core.h">
+      <Filter>src\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\debug\ImGuiRendererStats.h">
+      <Filter>src\engine\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\debug\Instrumentor.h">
+      <Filter>src\engine\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\events\Key.h">
+      <Filter>src\engine\events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\events\Mouse.h">
+      <Filter>src\engine\events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\events\eventCallbackManager.h">
+      <Filter>src\engine\events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\renderer\Buffers.h">
+      <Filter>src\engine\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\renderer\OrthographicCamera.h">
+      <Filter>src\engine\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\renderer\OrthographicCameraController.h">
+      <Filter>src\engine\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\renderer\RenderAPI.h">
+      <Filter>src\engine\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\renderer\RenderCommand.h">
+      <Filter>src\engine\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\renderer\Renderer2D.h">
+      <Filter>src\engine\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\renderer\Shader.h">
+      <Filter>src\engine\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\renderer\Texture.h">
+      <Filter>src\engine\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\renderer\VertexArray.h">
+      <Filter>src\engine\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\threads\WorkerThread.h">
+      <Filter>src\engine\threads</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\utils\Vector2i.h">
+      <Filter>src\engine\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\platform\GLFW\GLFWWindow.h">
+      <Filter>src\platform\GLFW</Filter>
+    </ClInclude>
+    <ClInclude Include="src\platform\OpenGL\OpenGLBuffers.h">
+      <Filter>src\platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\platform\OpenGL\OpenGLRenderAPI.h">
+      <Filter>src\platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\platform\OpenGL\OpenGLShader.h">
+      <Filter>src\platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\platform\OpenGL\OpenGLTexture.h">
+      <Filter>src\platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\platform\OpenGL\OpenGLVertexArray.h">
+      <Filter>src\platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\platform\SDL\SDLWindow.h">
+      <Filter>src\platform\SDL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\platform\SDL\SDL_AudioPlayer.h">
+      <Filter>src\platform\SDL</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\stb_image\stb_image.h">
+      <Filter>vendor\stb_image</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\engine\ImGui\ImGuiRenderer.cpp">
+      <Filter>src\engine\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\audio\AudioDebugger.cpp">
+      <Filter>src\engine\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\audio\audioPlayer.cpp">
+      <Filter>src\engine\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\core\Application.cpp">
+      <Filter>src\engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\core\Layer.cpp">
+      <Filter>src\engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\core\LayerStack.cpp">
+      <Filter>src\engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\core\Log.cpp">
+      <Filter>src\engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\core\Window.cpp">
+      <Filter>src\engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\debug\ImGuiRendererStats.cpp">
+      <Filter>src\engine\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\events\Key.cpp">
+      <Filter>src\engine\events</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\events\Mouse.cpp">
+      <Filter>src\engine\events</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\events\eventCallbackManager.cpp">
+      <Filter>src\engine\events</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\renderer\Buffers.cpp">
+      <Filter>src\engine\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\renderer\OrthographicCamera.cpp">
+      <Filter>src\engine\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\renderer\OrthographicCameraController.cpp">
+      <Filter>src\engine\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\renderer\RenderAPI.cpp">
+      <Filter>src\engine\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\renderer\RenderCommand.cpp">
+      <Filter>src\engine\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\renderer\Renderer2D.cpp">
+      <Filter>src\engine\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\renderer\Shader.cpp">
+      <Filter>src\engine\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\renderer\Texture.cpp">
+      <Filter>src\engine\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\renderer\VertexArray.cpp">
+      <Filter>src\engine\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\threads\WorkerThread.cpp">
+      <Filter>src\engine\threads</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\utils\Vector2i.cpp">
+      <Filter>src\engine\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\GLFW\GLFWWindow.cpp">
+      <Filter>src\platform\GLFW</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\OpenGL\OpenGLBuffers.cpp">
+      <Filter>src\platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\OpenGL\OpenGLRenderAPI.cpp">
+      <Filter>src\platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\OpenGL\OpenGLShader.cpp">
+      <Filter>src\platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\OpenGL\OpenGLTexture.cpp">
+      <Filter>src\platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\OpenGL\OpenGLVertexArray.cpp">
+      <Filter>src\platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\SDL\SDLWindow.cpp">
+      <Filter>src\platform\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\SDL\SDL_AudioPlayer.cpp">
+      <Filter>src\platform\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\stb_image\stb_image.cpp">
+      <Filter>vendor\stb_image</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
