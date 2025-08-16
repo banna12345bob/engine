@@ -4,8 +4,8 @@ project "engine"
 	cppdialect "C++20"
 	staticruntime "on"
 
-	targetdir ("%{wks.location}/compile/bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("%{wks.location}/compile/bin-int/" .. outputdir .. "/%{prj.name}")
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	defines {
 		-- "EG_GLFW_WINDOW",
