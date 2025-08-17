@@ -6,7 +6,7 @@
 
 #include "engine/core/core.h"
 #include "engine/renderer/Texture.h"
-#include "engine/renderer/OrthographicCamera.h"
+#include "engine/renderer/camera/Camera.h"
 
 namespace Engine {
 
@@ -16,7 +16,7 @@ namespace Engine {
 		static void Init();
 		static void Shutdown();
 
-		static void BeginScene(OrthographicCamera* camera);
+		static void BeginScene(Camera* camera);
 		static void EndScene();
 
 		static void Flush();

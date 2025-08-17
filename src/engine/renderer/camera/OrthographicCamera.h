@@ -1,10 +1,11 @@
 #pragma once
 
+#include "Camera.h"
 #include <glm/glm.hpp>
 
 namespace Engine {
 
-	class OrthographicCamera
+	class OrthographicCamera : public Camera
 	{
 	public:
 		OrthographicCamera(float left, float right, float bottom, float top);
@@ -17,9 +18,9 @@ namespace Engine {
 		float GetRotation() const { return m_Rotation; }
 		void SetRotation(const float& rotation) { m_Rotation = rotation; RecalculateViewMatrix(); }
 
-		const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
-		const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
-		const glm::mat4& GetViewProjectionMatrix() const { return m_ViewProjectionMatrix; }
+		virtual const glm::mat4& GetProjectionMatrix() const override { return m_ProjectionMatrix; }
+		virtual const glm::mat4& GetViewMatrix() const override { return m_ViewMatrix; }
+		virtual const glm::mat4& GetViewProjectionMatrix() const override { return m_ViewProjectionMatrix; }
 	private:
 		void RecalculateViewMatrix();
 	private:

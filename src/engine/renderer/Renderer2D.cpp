@@ -45,7 +45,7 @@ namespace Engine {
 
 		ShaderLibary shaderLibrary;
 
-		OrthographicCamera* orthoGraphicCamera = nullptr;
+		Camera* orthoGraphicCamera = nullptr;
 
 		Renderer2D::Statistics Stats;
 	};
@@ -113,7 +113,7 @@ namespace Engine {
 		delete[] s_Data.squareVertexBufferBase;
 	}
 
-	void Renderer2D::BeginScene(OrthographicCamera* camera)
+	void Renderer2D::BeginScene(Camera* camera)
 	{
 		s_Data.orthoGraphicCamera = camera;
 		s_Data.TextureShader->Bind();

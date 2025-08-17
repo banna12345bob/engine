@@ -15,7 +15,6 @@ namespace Engine {
 
 	void OrthographicCameraController::CaculateView()
 	{
-		//m_Bounds = { -m_AspectRatio * m_ZoomLevel - m_CameraPosition.x, m_AspectRatio * m_ZoomLevel - m_CameraPosition.x, -m_ZoomLevel - m_CameraPosition.y, m_ZoomLevel - m_CameraPosition.y };
 		m_Bounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };
 		m_Camera.SetProjection(m_Bounds.Left, m_Bounds.Right, m_Bounds.Bottom, m_Bounds.Top);
 	}

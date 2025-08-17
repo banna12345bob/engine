@@ -13,6 +13,6 @@
 #include "engine/renderer/Renderer2D.h"
 #include "engine/renderer/RenderCommand.h"
 #include "engine/renderer/Texture.h"
-#include "engine/renderer/OrthographicCameraController.h"
+#include "engine/renderer/camera/OrthographicCameraController.h"
 
 #include "engine/utils/Vector2i.h"

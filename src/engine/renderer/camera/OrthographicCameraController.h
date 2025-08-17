@@ -1,6 +1,7 @@
 #pragma once
 
-#include "engine/renderer/OrthographicCamera.h"
+#include "engine/renderer/camera/OrthographicCamera.h"
+#include "engine/renderer/camera/OrthographicCamera.h"
 
 namespace Engine {
 
