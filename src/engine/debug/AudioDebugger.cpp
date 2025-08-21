@@ -2,16 +2,18 @@
 
 #include "engine/core/Application.h"
 
+#include "engine/core/Keycodes.h"
 #include <imgui.h>
 
 namespace Engine {
 
 	AudioDebugger::AudioDebugger()
+		: Layer("AudioDebugger")
 	{
 		DirectoryIterator("assets\\audio");
 	}
 
-	void AudioDebugger::renderImGUILayer() {
+	void AudioDebugger::OnImGuiRender() {
 		EG_PROFILE_FUNCTION();
 		if (!this->m_ShowWindow)
 			return;
@@ -47,6 +49,21 @@ namespace Engine {
 					Application::getApplication()->getAudioPlayer()->PlaySound(entry, m_tempLoop, m_tempVolume);
 			}
 		ImGui::End();
+	}
+
+	void AudioDebugger::OnEvent(Event& event)
+	{
+		EventDispatcher dispatcher(event);
+		dispatcher.Dispatch<KeyPressedEvent>(EG_BIND_EVENT_FN(AudioDebugger::ShowWindow));
+	}
+
+	bool AudioDebugger::ShowWindow(KeyPressedEvent& e)
+	{
+		if (e.GetKeyCode() == EG_KEY_F4) {
+			m_ShowWindow = !m_ShowWindow;
+			return true;
+		}
+		return false;
 	}
 
 	void AudioDebugger::DirectoryIterator(std::filesystem::path path)

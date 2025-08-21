@@ -56,6 +56,97 @@ namespace Engine {
 			}
 			stbi_image_free(images[0].pixels);
 		}
+
+		glfwSetWindowUserPointer(m_window, &m_data);
+
+		//Event callbacks
+		glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height)
+		{
+			WindowProps& data = *(WindowProps*)glfwGetWindowUserPointer(window);
+			data.width = width;
+			data.height = height;
+
+			WindowResizeEvent event(width, height);
+			data.EventCallback(event);
+		});
+
+		glfwSetWindowCloseCallback(m_window, [](GLFWwindow* window)
+		{
+			WindowProps& data = *(WindowProps*)glfwGetWindowUserPointer(window);
+			WindowCloseEvent event;
+			data.EventCallback(event);
+		});
+
+		glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
+		{
+			WindowProps& data = *(WindowProps*)glfwGetWindowUserPointer(window);
+
+			switch (action)
+			{
+			case GLFW_PRESS:
+			{
+				KeyPressedEvent event(key, 0);
+				data.EventCallback(event);
+				break;
+			}
+			case GLFW_RELEASE:
+			{
+				KeyReleasedEvent event(key);
+				data.EventCallback(event);
+				break;
+			}
+			case GLFW_REPEAT:
+			{
+				KeyPressedEvent event(key, 1);
+				data.EventCallback(event);
+				break;
+			}
+			}
+		});
+
+		glfwSetCharCallback(m_window, [](GLFWwindow* window, unsigned int keycode)
+		{
+			WindowProps& data = *(WindowProps*)glfwGetWindowUserPointer(window);
+
+			KeyTypedEvent event(keycode);
+			data.EventCallback(event);
+		});
+
+		glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods)
+		{
+			WindowProps& data = *(WindowProps*)glfwGetWindowUserPointer(window);
+			switch (action)
+			{
+			case GLFW_PRESS:
+			{
+				MouseButtonPressedEvent event(button);
+				data.EventCallback(event);
+				break;
+			}
+			case GLFW_RELEASE:
+			{
+				MouseButtonReleasedEvent event(button);
+				data.EventCallback(event);
+				break;
+			}
+			}
+		});
+
+		glfwSetScrollCallback(m_window, [](GLFWwindow* window, double xOffset, double yOffset)
+		{
+			WindowProps& data = *(WindowProps*)glfwGetWindowUserPointer(window);
+
+			MouseScrolledEvent event((float)xOffset, (float)yOffset);
+			data.EventCallback(event);
+		});
+
+		glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double xPos, double yPos)
+		{
+			WindowProps& data = *(WindowProps*)glfwGetWindowUserPointer(window);
+
+			MouseMovedEvent event((float)xPos, (float)yPos);
+			data.EventCallback(event);
+		});
 	}
 
 	GLFWWindow::~GLFWWindow()
@@ -104,8 +195,10 @@ namespace Engine {
 		return 0;
 	}
 
-	void GLFWWindow::HandleEvents()
+	void GLFWWindow::SwapWindow()
 	{
+		glfwPollEvents();
+		glfwSwapBuffers(m_window);
 	}
 
 	void GLFWWindow::CreateGLContext()

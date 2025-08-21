@@ -7,11 +7,13 @@ namespace Engine {
 	class Key {
 	public:
 		/**
+		* DEPRICATED
 		* Only returns true on first frame of key being pressed
 		@param int keycode: the id of the key to check
 		*/
 		static bool wasKeyPressed(int keycode);
 		/**
+		* DEPRICATED
 		* Return true on every frame of key being pressed
 		@param int keycode: the id of the key to check
 		*/

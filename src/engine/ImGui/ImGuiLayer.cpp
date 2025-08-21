@@ -1,4 +1,4 @@
-#include "ImGuiRenderer.h"
+#include "ImGuiLayer.h"
 
 #include <imgui.h>
 
@@ -13,9 +13,15 @@
 
 #include "engine/core/Application.h"
 
+
 namespace Engine {
 
-	ImGuiRenderer::ImGuiRenderer()
+	ImGuiLayer::ImGuiLayer()
+		: Layer("ImGuiLayer")
+	{
+	}
+
+	void ImGuiLayer::OnAttach()
 	{
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -38,7 +44,7 @@ namespace Engine {
 		ImGui_ImplOpenGL3_Init("#version 450");
 	}
 
-	ImGuiRenderer::~ImGuiRenderer()
+	void ImGuiLayer::OnDetach()
 	{
 		ImGui_ImplOpenGL3_Shutdown();
 #ifdef EG_GLFW_WINDOW
@@ -49,7 +55,14 @@ namespace Engine {
 		ImGui::DestroyContext();
 	}
 
-	void ImGuiRenderer::StartFrame()
+	void ImGuiLayer::OnEvent(Event& e)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		e.Handled |= e.IsInCategory(EventCategoryMouse) & io.WantCaptureMouse;
+		e.Handled |= e.IsInCategory(EventCategoryKeyboard) & io.WantCaptureKeyboard;
+	}
+
+	void ImGuiLayer::Begin()
 	{
 		EG_PROFILE_FUNCTION();
 
@@ -62,7 +75,7 @@ namespace Engine {
 		ImGui::NewFrame();
 	}
 
-	void ImGuiRenderer::EndFrame()
+	void ImGuiLayer::End()
 	{
 		EG_PROFILE_FUNCTION();
 
@@ -87,13 +100,4 @@ namespace Engine {
 #endif
 		}
 	}
-
-	void ImGuiRenderer::handleImGUIEvents(const SDL_Event* event)
-	{
-#ifdef EG_GLFW_WINDOW
-#else
-		ImGui_ImplSDL3_ProcessEvent(event);
-#endif
-	}
-
 }

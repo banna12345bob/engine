@@ -1,14 +1,24 @@
 #pragma once
 
+#include "engine/core/Layer.h"
+#include "engine/events/AllEvents.h"
+
 namespace Engine {
 
-	class ImGuiLayer
+	class ImGuiLayer : public Layer
 	{
 	public:
-		virtual void renderImGUILayer() = 0;
+		ImGuiLayer();
+		~ImGuiLayer() = default;
 
-		// Layer not shown by default
-		bool m_ShowWindow = false;
+		virtual void OnAttach() override;
+		virtual void OnDetach() override;
+		virtual void OnEvent(Event& e) override;
+
+		void Begin();
+		void End();
+	private:
+		float m_Time = 0.0f;
 	};
 
 }

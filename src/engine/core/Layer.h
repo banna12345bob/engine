@@ -4,6 +4,7 @@
 #include <string>
 
 #include "engine/core/TimeStep.h"
+#include "engine/events/AllEvents.h"
 
 namespace Engine {
 
@@ -18,6 +19,7 @@ namespace Engine {
 		virtual void OnUpdate(Timestep ts) {}
 		virtual void OnRender() {}
 		virtual void OnImGuiRender() {}
+		virtual void OnEvent(Event& event) {}
 
 		inline const std::string& GetName() const { return m_DebugName; }
 	protected:

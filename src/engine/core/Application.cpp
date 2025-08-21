@@ -13,25 +13,25 @@ namespace Engine {
 
 	static Application* s_Instance = nullptr;
 
-	Application::Application(WindowProps props)
+	Application::Application(Window::WindowProps props)
 	{
 		EG_PROFILE_FUNCTION();
 		s_Instance = this;
 
 		m_Window = Window::Create(props);
+		m_Window->SetEventCallback(EG_BIND_EVENT_FN(Application::OnEvent));
 		m_EventCallbackManager = new eventCallbackManager();
 		m_AudioPlayer = AudioPlayer::Create();
-		m_ImGuiRenderer = new ImGuiRenderer();
 
 		m_Window->SetVSync(false);
 
-		getImGuiRenderer()->registerImGuiLayer(m_AudioDebuggerLayer);
-		getImGuiRenderer()->registerImGuiLayer(m_RendererStatsLayer);
-
-		m_EventCallbackManager->registerKeyboardCallback(ApplicationKeyboardEventCallback);
-
 		RenderCommand::Init();
 		Renderer2D::Init();
+		m_ImGuiLayer = new ImGuiLayer();
+		PushOverlay(m_ImGuiLayer);
+
+		PushLayer(new AudioDebugger);
+		PushLayer(new ImGuiRendererStats);
 	}
 
 	Application::~Application()
@@ -45,20 +45,18 @@ namespace Engine {
 		return s_Instance;
 	}
 
-	void Application::ApplicationKeyboardEventCallback(void* callback) {
-		EG_PROFILE_FUNCTION();
+	void Application::OnEvent(Event& e)
+	{
+		EventDispatcher dispatcher(e);
+		dispatcher.Dispatch<WindowCloseEvent>(EG_BIND_EVENT_FN(Application::OnWindowClose));
+		dispatcher.Dispatch<KeyPressedEvent>(EG_BIND_EVENT_FN(Application::DebugKeys));
 
-		if (Key::wasKeyPressed(EG_KEY_F1)) {
-			if (RenderCommand::GetRenderMode() == RenderAPI::RenderMode::Normal)
-				RenderCommand::SetRenderMode(RenderAPI::RenderMode::Wireframe);
-			else
-				RenderCommand::SetRenderMode(RenderAPI::RenderMode::Normal);
+		for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); ++it)
+		{
+			if (e.Handled)
+				break;
+			(*it)->OnEvent(e);
 		}
-		if (Key::wasKeyPressed(EG_KEY_F2))
-			Application::getApplication()->m_RendererStatsLayer->m_ShowWindow = !Application::getApplication()->m_RendererStatsLayer->m_ShowWindow;
-
-		if (Key::wasKeyPressed(EG_KEY_F4))
-			Application::getApplication()->m_AudioDebuggerLayer->m_ShowWindow = !Application::getApplication()->m_AudioDebuggerLayer->m_ShowWindow;
 	}
 
 	void Application::PushLayer(Layer* layer)
@@ -84,25 +82,37 @@ namespace Engine {
 			Timestep timestep = time - m_LastFrameTime;
 			m_LastFrameTime = time;
 
-			m_Window->HandleEvents();
-
-			// Need to update mouse every frame
-			Engine::Mouse::UpdateMouseState();
-
 			Engine::Renderer2D::ResetStats();
 			for (Layer* layer : m_layerStack) {
 				layer->OnUpdate(timestep);
 				layer->OnRender();
 			}
 
-			m_ImGuiRenderer->StartFrame();
+			m_ImGuiLayer->Begin();
 			for (Layer* layer : m_layerStack)
 				layer->OnImGuiRender();
-			m_AudioDebuggerLayer->renderImGUILayer();
-			m_RendererStatsLayer->renderImGUILayer();
-			m_ImGuiRenderer->EndFrame();
+			m_ImGuiLayer->End();
 
 			m_Window->SwapWindow();
 		}
+	}
+
+	bool Application::OnWindowClose(WindowCloseEvent& e)
+	{
+		m_Window->SetRunning(false);
+		return true;
+	}
+
+	bool Application::DebugKeys(KeyPressedEvent& e)
+	{
+		if (e.GetKeyCode() == EG_KEY_F1)
+		{
+			if (RenderCommand::GetRenderMode() == RenderAPI::RenderMode::Normal)
+				RenderCommand::SetRenderMode(RenderAPI::RenderMode::Wireframe);
+			else
+				RenderCommand::SetRenderMode(RenderAPI::RenderMode::Normal);
+			return true;
+		}
+		return false;
 	}
 }

@@ -17,7 +17,7 @@
 namespace Engine {
 	bool EventWatcher(void* userdata, SDL_Event* event)
 	{
-		Application::getApplication()->getImGuiRenderer()->handleImGUIEvents(event);
+		//Application::getApplication()->getImGuiRenderer()->handleImGUIEvents(event);
 
 		switch (event->type) {
 		case SDL_EVENT_QUIT:
@@ -242,11 +242,11 @@ namespace Engine {
 		return state;
 	}
 
-	void SDLWindow::HandleEvents()
+	/*void SDLWindow::HandleEvents()
 	{
 		SDL_Event e;
 		SDL_PollEvent(&e);
-	}
+	}*/
 
 	void SDLWindow::CreateGLContext() 
 	{

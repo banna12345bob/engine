@@ -3,14 +3,16 @@
 #include <imgui.h>
 
 #include "engine/renderer/Renderer2D.h"
+#include "engine/core/Keycodes.h"
 
 namespace Engine {
 
 	ImGuiRendererStats::ImGuiRendererStats()
+		: Layer("RenderStats")
 	{
 	}
 
-	void ImGuiRendererStats::renderImGUILayer()
+	void ImGuiRendererStats::OnImGuiRender()
 	{
 		if (!m_ShowWindow)
 			return;
@@ -25,5 +27,19 @@ namespace Engine {
 		ImGui::End();
 	}
 
+	void ImGuiRendererStats::OnEvent(Event& event)
+	{
+		EventDispatcher dispatcher(event);
+		dispatcher.Dispatch<KeyPressedEvent>(EG_BIND_EVENT_FN(ImGuiRendererStats::ShowWindow));
+	}
+
+	bool ImGuiRendererStats::ShowWindow(KeyPressedEvent& e)
+	{
+		if (e.GetKeyCode() == EG_KEY_F2) {
+			m_ShowWindow = !m_ShowWindow;
+			return true;
+		}
+		return false;
+	}
 
 }

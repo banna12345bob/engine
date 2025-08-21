@@ -8,7 +8,7 @@ project "engine"
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	defines {
-		-- "EG_GLFW_WINDOW",
+		"EG_GLFW_WINDOW",
 		"GLFW_INCLUDE_NONE"
 	}
 
