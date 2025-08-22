@@ -1,7 +1,9 @@
 #pragma once
 
 #include "engine/renderer/camera/OrthographicCamera.h"
-#include "engine/renderer/camera/OrthographicCamera.h"
+
+#include "engine/core/Timestep.h"
+#include "engine/events/AllEvents.h"
 
 namespace Engine {
 
@@ -19,7 +21,8 @@ namespace Engine {
 	public:
 		OrthographicCameraController(float aspectratio, glm::vec3 position = { 0.0f, 0.0f, 0.0f });
 
-		void OnUpdate();
+		void OnUpdate(Timestep ts);
+		void OnEvent(Event& e);
 
 		OrthographicCamera& GetCamera() { return m_Camera; }
 		const OrthographicCamera& GetCamera() const { return m_Camera; }
@@ -33,6 +36,8 @@ namespace Engine {
 		void setPosition(const glm::vec3 position) { m_CameraPosition = position; }
 		const glm::vec3& getPosition() const { return m_CameraPosition; }
 	private:
+		bool OnWindowRezise(WindowResizeEvent& e);
+
 		void CaculateView();
 	private:
 		float m_AspectRatio;
