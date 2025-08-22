@@ -8,58 +8,72 @@
 
 #include "engine/debug/Instrumentor.h"
 #include "engine/core/Application.h"
-#include "engine/events/Key.h"
-#include "engine/events/Mouse.h"
 
 #include "engine/renderer/RenderAPI.h"
 #include "engine/renderer/RenderCommand.h"
 
+#include <backends/imgui_impl_sdl3.h>
+
 namespace Engine {
 	bool EventWatcher(void* userdata, SDL_Event* event)
 	{
-		//Application::getApplication()->getImGuiRenderer()->handleImGUIEvents(event);
+		if (Application::getApplication()->isRunning())
+			ImGui_ImplSDL3_ProcessEvent(event);
 
-		switch (event->type) {
-		case SDL_EVENT_QUIT:
-			Application::getApplication()->getWindow()->SetRunning(false);
-			break;
-		case SDL_EVENT_WINDOW_RESIZED:
-			// TODO: Change OpenGL viewport size
-			Application::getApplication()->getWindow()->ReloadWindow();
-			break;
-		case SDL_EVENT_WINDOW_MINIMIZED:
-			// TODO: Add a config option that caps the FPS if window minimized
-			EG_CORE_WARN("implement Window Minimized event");
-			break;
-		case SDL_EVENT_WINDOW_RESTORED:
-			EG_CORE_WARN("implement Window Restored events");
-			break;
-		case SDL_EVENT_KEY_DOWN:
-			Key::setKeyPressed(event->key.scancode, true);
-			if (Application::getApplication()->getCallbackManager()->getKeyboardCallbacks()->size() == 0) {
-				EG_CORE_WARN("No keyboard callbacks registered");
-				break;
-			}
-			for (int i = 0; i < Application::getApplication()->getCallbackManager()->getKeyboardCallbacks()->size(); i++)
-				Application::getApplication()->getCallbackManager()->getKeyboardCallbacks()->at(i)(nullptr);
-			break;
-		case SDL_EVENT_KEY_UP:
-			Key::setKeyPressed(event->key.scancode, false);
-			break;
-		case SDL_EVENT_MOUSE_BUTTON_DOWN:
-			// Need to update mouse every frame, so is done elsewhere.
-			/*Mouse::setButtonPressed(event->button.button, true);*/
-			for (int i = 0; i < Application::getApplication()->getCallbackManager()->getMouseDownCallbacks()->size(); i++)
-				Application::getApplication()->getCallbackManager()->getMouseDownCallbacks()->at(i)(nullptr);
-			break;
-		case SDL_EVENT_MOUSE_BUTTON_UP:
-			Mouse::setButtonPressed(event->button.button, false);
-			break;
-		case SDL_EVENT_MOUSE_MOTION:
-			Mouse::setPosition(event->motion.x, event->motion.y);
-			for (int i = 0; i < Application::getApplication()->getCallbackManager()->getMouseMoveCallbacks()->size(); i++)
-				Application::getApplication()->getCallbackManager()->getMouseMoveCallbacks()->at(i)(nullptr);
-			break;
+		Window::WindowProps& data = *(Window::WindowProps*)userdata;
+		if (event->type == SDL_EVENT_WINDOW_RESIZED)
+		{
+			int width, height;
+			SDL_GetWindowSize(SDL_GetWindowFromEvent(event), &width, &height);
+			data.width = width;
+			data.height = height;
+
+			WindowResizeEvent event(width, height);
+			data.EventCallback(event);
+		}
+		if (event->type == SDL_EVENT_QUIT)
+		{
+			WindowCloseEvent e;
+			data.EventCallback(e);
+		}
+		if (event->type == SDL_EVENT_KEY_DOWN)
+		{
+			int key = event->key.scancode;
+			int repeat = event->key.repeat;
+			KeyPressedEvent event(key, repeat);
+			data.EventCallback(event);
+		}
+		if (event->type == SDL_EVENT_KEY_UP)
+		{
+			int key = event->key.scancode;
+			KeyReleasedEvent event(key);
+			data.EventCallback(event);
+		}
+		if (event->type == SDL_EVENT_MOUSE_BUTTON_DOWN)
+		{
+			int button = event->button.button;
+			MouseButtonPressedEvent event(button);
+			data.EventCallback(event);
+		}
+		if (event->type == SDL_EVENT_MOUSE_BUTTON_UP)
+		{
+			int button = event->button.button;
+			MouseButtonReleasedEvent event(button);
+			data.EventCallback(event);
+		}
+		if (event->type == SDL_EVENT_MOUSE_WHEEL)
+		{
+			int xOffset = event->wheel.x;
+			int yOffset = event->wheel.y;
+			MouseScrolledEvent event((float)xOffset, (float)yOffset);
+			data.EventCallback(event);
+		}
+		if (event->type == SDL_EVENT_MOUSE_MOTION)
+		{
+			float xPos = event->motion.x;
+			float yPos = event->motion.y;
+			MouseMovedEvent event(xPos, yPos);
+			data.EventCallback(event);
 		}
 
 		return true;
@@ -76,7 +90,7 @@ namespace Engine {
 		EG_PROFILE_FUNCTION();
 
 		uint32_t WindowFlags = SDL_WINDOW_OPENGL;
-		//WindowFlags |= SDL_WINDOW_RESIZABLE;
+		WindowFlags |= SDL_WINDOW_RESIZABLE;
 
 		EG_CORE_ASSERT(m_data.width > 0 && m_data.height > 0, "Invalid Window size");
 		EG_CORE_INFO("Creating SDL3 window {0} ({1}, {2})", m_data.title, m_data.width, m_data.height);
@@ -113,7 +127,7 @@ namespace Engine {
 		case RenderAPI::API::OpenGL: CreateGLContext();	break;
 		}
 
-		SDL_AddEventWatch(EventWatcher, this);
+		SDL_AddEventWatch(EventWatcher, &m_data);
 
 		if (!std::filesystem::exists(m_data.pathToIcon)) {
 			m_data.pathToIcon = "";
@@ -187,7 +201,6 @@ namespace Engine {
 	{
 		EG_PROFILE_FUNCTION();
 		SDL_GetWindowSize(m_window, &m_data.width, &m_data.height);
-		RenderCommand::SetViewport(0, 0, GetWidth(), GetHeight());
 	}
 
 	/**
@@ -208,24 +221,6 @@ namespace Engine {
 				EG_CORE_ERROR("Could not disable VSync: {0}", SDL_GetError());
 			}
 		}
-
-		int state;
-		if (!SDL_GL_GetSwapInterval(&state)) {
-			EG_CORE_ERROR("Could not get VSync state: {0}", SDL_GetError());
-			return;
-		}
-
-		switch (state) {
-		case 0:
-			EG_CORE_INFO("VSync is off.");
-			break;
-		case 1:
-			EG_CORE_INFO("VSync is on.");
-			break;
-		case -1:
-			EG_CORE_INFO("Adaptive VSync is on.");
-			break;
-		}
 	}
 
 	/**
@@ -242,13 +237,15 @@ namespace Engine {
 		return state;
 	}
 
-	/*void SDLWindow::HandleEvents()
+	void SDLWindow::OnUpdate()
 	{
 		SDL_Event e;
 		SDL_PollEvent(&e);
-	}*/
 
-	void SDLWindow::CreateGLContext() 
+		SDL_GL_SwapWindow(m_window);
+	}
+
+	void SDLWindow::CreateGLContext()
 	{
 		EG_PROFILE_FUNCTION();
 		// Create the OpenGl context

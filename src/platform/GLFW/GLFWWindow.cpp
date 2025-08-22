@@ -179,7 +179,6 @@ namespace Engine {
 	void GLFWWindow::ReloadWindow()
 	{
 		glfwGetWindowSize(m_window, &m_data.width, &m_data.height);
-		RenderCommand::SetViewport(0, 0, GetWidth(), GetHeight());
 	}
 
 	void GLFWWindow::SetVSync(bool value)
@@ -190,12 +189,13 @@ namespace Engine {
 			glfwSwapInterval(0);
 	}
 
+	// Cannot return current VSync state in GLFW
 	int GLFWWindow::GetVSync()
 	{
 		return 0;
 	}
 
-	void GLFWWindow::SwapWindow()
+	void GLFWWindow::OnUpdate()
 	{
 		glfwPollEvents();
 		glfwSwapBuffers(m_window);

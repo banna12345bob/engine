@@ -35,7 +35,7 @@ namespace Engine {
 
 	bool ImGuiRendererStats::ShowWindow(KeyPressedEvent& e)
 	{
-		if (e.GetKeyCode() == EG_KEY_F2) {
+		if (e.GetKeyCode() == EG_KEY_F2 && e.GetRepeatCount() == 0) {
 			m_ShowWindow = !m_ShowWindow;
 			return true;
 		}

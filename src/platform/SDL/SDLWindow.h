@@ -21,12 +21,13 @@ namespace Engine {
 
 		virtual void ReloadWindow() override;
 
+		inline void SetEventCallback(const EventCallbackFn& callback) override { m_data.EventCallback = callback; }
 		virtual void SetVSync(bool value) override;
 		virtual int GetVSync() override;
 
 		virtual void* getNativeWindow() override { return m_window; }
 
-		virtual void SwapWindow() override { SDL_GL_SwapWindow(m_window); }
+		virtual void OnUpdate() override;
 	private:
 		void CreateGLContext();
 

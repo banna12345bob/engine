@@ -27,7 +27,7 @@ namespace Engine {
 
 		virtual void* getNativeWindow() override { return m_window; }
 
-		virtual void SwapWindow() override;
+		virtual void OnUpdate() override;
 	private:
 		void CreateGLContext();
 

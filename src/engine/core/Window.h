@@ -37,10 +37,7 @@ namespace Engine {
 
 		virtual void* getNativeWindow() = 0;
 
-		virtual bool GetRunning() { return m_Running; }
-		virtual void SetRunning(bool running) { m_Running = running; }
-
-		virtual void SwapWindow() = 0;
+		virtual void OnUpdate() = 0;
 
 		struct WindowProps
 		{
@@ -63,10 +60,6 @@ namespace Engine {
 		};
 
 		static Scope<Window> Create(WindowProps props);
-
-	private:
-		bool m_Running = true;
-
 	};
 }
 

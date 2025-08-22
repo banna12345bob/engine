@@ -59,7 +59,7 @@ namespace Engine {
 
 	bool AudioDebugger::ShowWindow(KeyPressedEvent& e)
 	{
-		if (e.GetKeyCode() == EG_KEY_F4) {
+		if (e.GetKeyCode() == EG_KEY_F4 && e.GetRepeatCount() == 0) {
 			m_ShowWindow = !m_ShowWindow;
 			return true;
 		}

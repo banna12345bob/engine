@@ -3,9 +3,6 @@
 #include "engine/debug/Instrumentor.h"
 
 #include "engine/core/Keycodes.h"
-#include "engine/events/Key.h"
-#include "engine/events/Mouse.h"
-
 #include "engine/renderer/Renderer2D.h"
 #include "engine/renderer/RenderCommand.h"
 
@@ -20,7 +17,7 @@ namespace Engine {
 
 		m_Window = Window::Create(props);
 		m_Window->SetEventCallback(EG_BIND_EVENT_FN(Application::OnEvent));
-		m_EventCallbackManager = new eventCallbackManager();
+		m_Running = true;
 		m_AudioPlayer = AudioPlayer::Create();
 
 		m_Window->SetVSync(false);
@@ -49,12 +46,14 @@ namespace Engine {
 	{
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(EG_BIND_EVENT_FN(Application::OnWindowClose));
+		dispatcher.Dispatch<WindowResizeEvent>(EG_BIND_EVENT_FN(Application::OnWindowResize));
 		dispatcher.Dispatch<KeyPressedEvent>(EG_BIND_EVENT_FN(Application::DebugKeys));
 
 		for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); ++it)
 		{
-			if (e.Handled)
+			if (e.Handled) 
 				break;
+
 			(*it)->OnEvent(e);
 		}
 	}
@@ -77,7 +76,7 @@ namespace Engine {
 
 		m_LastFrameTime = SDL_GetTicks();
 
-		while (m_Window->GetRunning()) {
+		while (m_Running) {
 			float time = SDL_GetTicks();
 			Timestep timestep = time - m_LastFrameTime;
 			m_LastFrameTime = time;
@@ -93,19 +92,27 @@ namespace Engine {
 				layer->OnImGuiRender();
 			m_ImGuiLayer->End();
 
-			m_Window->SwapWindow();
+			m_Window->OnUpdate();
 		}
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
-		m_Window->SetRunning(false);
+		m_Running = false;
 		return true;
+	}
+
+	bool Application::OnWindowResize(WindowResizeEvent& e)
+	{
+		m_Window->ReloadWindow();
+		RenderCommand::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
+
+		return false;
 	}
 
 	bool Application::DebugKeys(KeyPressedEvent& e)
 	{
-		if (e.GetKeyCode() == EG_KEY_F1)
+		if (e.GetKeyCode() == EG_KEY_F1 && e.GetRepeatCount() == 0)
 		{
 			if (RenderCommand::GetRenderMode() == RenderAPI::RenderMode::Normal)
 				RenderCommand::SetRenderMode(RenderAPI::RenderMode::Wireframe);
