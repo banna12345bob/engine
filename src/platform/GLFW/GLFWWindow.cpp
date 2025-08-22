@@ -183,16 +183,13 @@ namespace Engine {
 
 	void GLFWWindow::SetVSync(bool value)
 	{
-		if (value)
-			glfwSwapInterval(1);
-		else
-			glfwSwapInterval(0);
+		m_data.vSync = value;
+		glfwSwapInterval(m_data.vSync);
 	}
 
-	// Cannot return current VSync state in GLFW
 	int GLFWWindow::GetVSync()
 	{
-		return 0;
+		return m_data.vSync;
 	}
 
 	void GLFWWindow::OnUpdate()

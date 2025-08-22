@@ -48,6 +48,7 @@ namespace Engine {
 			bool fullscreen;
 
 			EventCallbackFn EventCallback;
+			int vSync;
 			//Default constructor
 			WindowProps(const std::string& title,
 				int width,

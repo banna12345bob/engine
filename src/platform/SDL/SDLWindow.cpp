@@ -207,7 +207,8 @@ namespace Engine {
 	* If turning VSync on, adaptive VSync will be tried first, then regualr VSync if that doesn't work.
 	*/
 	void SDLWindow::SetVSync(bool value) {
-		if (value) {
+		m_data.vSync = value;
+		if (m_data.vSync) {
 			// Try adaptive VSync, if that doesn't work try the normal one
 			if (!SDL_GL_SetSwapInterval(-1)) {
 				EG_CORE_ERROR("Could not enable adaptive VSync: {0}", SDL_GetError());
@@ -234,6 +235,7 @@ namespace Engine {
 			EG_CORE_ERROR("Could not get VSync state: {0}", SDL_GetError());
 			return -2;
 		}
+		m_data.vSync = state;
 		return state;
 	}
 
