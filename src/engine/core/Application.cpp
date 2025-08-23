@@ -6,6 +6,8 @@
 #include "engine/renderer/Renderer2D.h"
 #include "engine/renderer/RenderCommand.h"
 
+#include <GLFW/glfw3.h>
+
 namespace Engine {
 
 	static Application* s_Instance = nullptr;
@@ -74,10 +76,9 @@ namespace Engine {
 	{
 		EG_PROFILE_FUNCTION();
 
-		m_LastFrameTime = SDL_GetTicks();
-
+		m_LastFrameTime = (float)glfwGetTime();
 		while (m_Running) {
-			float time = SDL_GetTicks();
+			float time = (float)glfwGetTime();
 			Timestep timestep = time - m_LastFrameTime;
 			m_LastFrameTime = time;
 
