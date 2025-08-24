@@ -7,6 +7,7 @@
 #ifdef _WIN32
 	#ifdef _WIN64
 		#define EG_PLATFORM_WINDOWS
+		#define EG_GLFW_WINDOW
 	#else
 		#error "Unsupported Windows platform"
 	#endif

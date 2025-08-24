@@ -8,9 +8,6 @@ project "engine"
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	defines {
-	-- Higly recommended to use GLFW for the window manager
-	-- SDL3 doesn't handle undocked ImGui windows very well
-		"EG_GLFW_WINDOW",
 		"GLFW_INCLUDE_NONE"
 	}
 
