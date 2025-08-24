@@ -17,3 +17,5 @@
 #include "engine/utils/Vector2i.h"
 
 #include "engine/events/AllEvents.h"
+
+#include "engine/scene/Scene.h"
