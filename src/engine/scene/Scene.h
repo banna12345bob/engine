@@ -10,6 +10,7 @@ namespace Engine {
 	public:
 		Scene() = default;
 
+		void UpdateScene(Timestep ts);
 		void RenderScene(Camera* camera);
 		void AddEntity(Entity* entity);
 		Entity* GetEntity(std::string name);

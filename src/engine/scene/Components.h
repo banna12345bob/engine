@@ -6,6 +6,12 @@
 #include <glm/glm.hpp>
 
 namespace Engine {
+	enum Components {
+		Transform,
+		SpriteRenderer,
+		Acceleration
+	};
+
 	struct Component {
 		std::string componentName;
 
@@ -35,6 +41,19 @@ namespace Engine {
 		SpriteRendererComponent(const glm::vec4& colour)
 			: colour(colour) {
 			componentName = "SpritRenderer";
+		}
+	};
+
+	struct AccelerationComponent : public Component {
+		glm::vec3 acceleration = glm::vec3(0.f);
+		float rotationAcceleration = 0.f;
+		glm::vec2 scaleAcceleration = glm::vec2(0.f);
+
+		AccelerationComponent() = default;
+		AccelerationComponent(const AccelerationComponent&) = default;
+		AccelerationComponent(const glm::vec3 acceleration)
+			: acceleration(acceleration) {
+			componentName = "Acceleration";
 		}
 	};
 }

@@ -9,28 +9,42 @@ namespace Engine {
 	{
 		TransformComponent* transformComponent = new TransformComponent();
 		SpriteRendererComponent* spriteRendererComponent = new SpriteRendererComponent();
+		AccelerationComponent* accelerationComponent = new AccelerationComponent();
 
-		m_Components.push_back(transformComponent);
-		m_Components.push_back(spriteRendererComponent);
+		m_Components[Components::Transform] = transformComponent;
+		m_Components[Components::SpriteRenderer] = spriteRendererComponent;
+		m_Components[Components::Acceleration] = accelerationComponent;
 	}
 
-	void Entity::Render()
+	void Entity::OnUpdate(Timestep ts)
 	{
-		if (((SpriteRendererComponent*)m_Components[1])->texture)
+		GetTransform()->position += GetAcceleration()->acceleration * ts.GetSeconds();
+		GetTransform()->rotation += GetAcceleration()->rotationAcceleration * ts.GetSeconds();
+		GetTransform()->scale += GetAcceleration()->scaleAcceleration * ts.GetSeconds();
+	}
+
+	void Entity::OnRender()
+	{
+		if (((SpriteRendererComponent*)m_Components[Components::SpriteRenderer])->texture)
 		{
-			Renderer2D::DrawQuad(((TransformComponent*)m_Components[0])->position, ((TransformComponent*)m_Components[0])->scale, ((TransformComponent*)m_Components[0])->rotation, ((SpriteRendererComponent*)m_Components[1])->texture, ((SpriteRendererComponent*)m_Components[1])->colour, ((SpriteRendererComponent*)m_Components[1])->tilingFactor);
+			Renderer2D::DrawQuad(((TransformComponent*)m_Components[Components::Transform])->position, ((TransformComponent*)m_Components[Components::Transform])->scale, ((TransformComponent*)m_Components[Components::Transform])->rotation, ((SpriteRendererComponent*)m_Components[Components::SpriteRenderer])->texture, ((SpriteRendererComponent*)m_Components[Components::SpriteRenderer])->colour, ((SpriteRendererComponent*)m_Components[Components::SpriteRenderer])->tilingFactor);
 		} else {
-			Renderer2D::DrawQuad(((TransformComponent*)m_Components[0])->position, ((TransformComponent*)m_Components[0])->scale, ((TransformComponent*)m_Components[0])->rotation, ((SpriteRendererComponent*)m_Components[1])->colour);
+			Renderer2D::DrawQuad(((TransformComponent*)m_Components[Components::Transform])->position, ((TransformComponent*)m_Components[Components::Transform])->scale, ((TransformComponent*)m_Components[Components::Transform])->rotation, ((SpriteRendererComponent*)m_Components[Components::SpriteRenderer])->colour);
 		}
 	}
 
 	TransformComponent* Entity::GetTransform()
 	{
-		return ((TransformComponent*)m_Components[0]);
+		return ((TransformComponent*)m_Components[Components::Transform]);
 	}
 
 	SpriteRendererComponent* Entity::GetSpriteRenderer()
 	{
-		return ((SpriteRendererComponent*)m_Components[1]);
+		return ((SpriteRendererComponent*)m_Components[Components::SpriteRenderer]);
+	}
+
+	AccelerationComponent* Entity::GetAcceleration()
+	{
+		return ((AccelerationComponent*)m_Components[Components::Acceleration]);
 	}
 }

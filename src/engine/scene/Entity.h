@@ -2,6 +2,8 @@
 
 #include "Components.h"
 
+#include "engine/core/Timestep.h"
+
 namespace Engine {
 
 	class Entity
@@ -9,14 +11,16 @@ namespace Engine {
 	public:
 		Entity(std::string name);
 
-		void Render();
+		void OnUpdate(Timestep ts);
+		void OnRender();
 		TransformComponent* GetTransform();
 		SpriteRendererComponent* GetSpriteRenderer();
+		AccelerationComponent* GetAcceleration();
 	public:
 		std::string name;
 		bool hide = false;
 	private:
-		std::vector<Component*> m_Components;
+		std::unordered_map<Components, Component*> m_Components;
 	};
 }
 

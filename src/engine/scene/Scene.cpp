@@ -3,6 +3,12 @@
 #include "engine/renderer/Renderer2D.h"
 
 namespace Engine {
+	void Scene::UpdateScene(Timestep ts)
+	{
+		for (auto it = m_Entities.begin(); it != m_Entities.end(); it++)
+			it->second->OnUpdate(ts);
+	}
+
 	void Scene::RenderScene(Camera* camera)
 	{
 		Renderer2D::BeginScene(camera);
@@ -11,7 +17,7 @@ namespace Engine {
 			if (it->second->hide)
 				continue;
 
-			it->second->Render();
+			it->second->OnRender();
 		}
 		Renderer2D::EndScene();
 	}
