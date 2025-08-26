@@ -9,18 +9,18 @@ namespace Engine {
 	{
 		TransformComponent* transformComponent = new TransformComponent();
 		SpriteRendererComponent* spriteRendererComponent = new SpriteRendererComponent();
-		AccelerationComponent* accelerationComponent = new AccelerationComponent();
+		VelocityComponent* accelerationComponent = new VelocityComponent();
 
 		m_Components[Components::Transform] = transformComponent;
 		m_Components[Components::SpriteRenderer] = spriteRendererComponent;
-		m_Components[Components::Acceleration] = accelerationComponent;
+		m_Components[Components::Velocity] = accelerationComponent;
 	}
 
 	void Entity::OnUpdate(Timestep ts)
 	{
-		GetTransform()->position += GetAcceleration()->acceleration * ts.GetSeconds();
-		GetTransform()->rotation += GetAcceleration()->rotationAcceleration * ts.GetSeconds();
-		GetTransform()->scale += GetAcceleration()->scaleAcceleration * ts.GetSeconds();
+		GetTransform()->position += GetVelocity()->velocity * ts.GetSeconds();
+		GetTransform()->rotation += GetVelocity()->rotationVelocity * ts.GetSeconds();
+		GetTransform()->scale += GetVelocity()->scaleAcceleration * ts.GetSeconds();
 	}
 
 	void Entity::OnRender()
@@ -43,8 +43,8 @@ namespace Engine {
 		return ((SpriteRendererComponent*)m_Components[Components::SpriteRenderer]);
 	}
 
-	AccelerationComponent* Entity::GetAcceleration()
+	VelocityComponent* Entity::GetVelocity()
 	{
-		return ((AccelerationComponent*)m_Components[Components::Acceleration]);
+		return ((VelocityComponent*)m_Components[Components::Velocity]);
 	}
 }

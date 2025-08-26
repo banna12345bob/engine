@@ -15,11 +15,11 @@ namespace Engine {
 		virtual void OnRender();
 		TransformComponent* GetTransform();
 		SpriteRendererComponent* GetSpriteRenderer();
-		AccelerationComponent* GetAcceleration();
+		VelocityComponent* GetVelocity();
 	public:
 		std::string name;
 		bool hide = false;
-	private:
+	protected:
 		std::unordered_map<Components, Component*> m_Components;
 	};
 }
