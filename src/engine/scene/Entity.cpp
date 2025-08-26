@@ -20,7 +20,7 @@ namespace Engine {
 	{
 		GetTransform()->position += GetVelocity()->velocity * ts.GetSeconds();
 		GetTransform()->rotation += GetVelocity()->rotationVelocity * ts.GetSeconds();
-		GetTransform()->scale += GetVelocity()->scaleAcceleration * ts.GetSeconds();
+		GetTransform()->scale += GetVelocity()->scaleVelocity * ts.GetSeconds();
 	}
 
 	void Entity::OnRender()

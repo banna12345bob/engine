@@ -48,7 +48,7 @@ namespace Engine {
 	struct VelocityComponent : public Component {
 		glm::vec3 velocity = glm::vec3(0.f);
 		float rotationVelocity = 0.f;
-		glm::vec2 scaleAcceleration = glm::vec2(0.f);
+		glm::vec2 scaleVelocity = glm::vec2(0.f);
 
 		VelocityComponent() = default;
 		VelocityComponent(const VelocityComponent&) = default;
