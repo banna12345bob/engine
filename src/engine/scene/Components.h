@@ -6,6 +6,14 @@
 #include <glm/glm.hpp>
 
 namespace Engine {
+	enum Direction {
+		NONE = 0,
+		LEFT = 1,
+		RIGHT = 2,
+		UP = 3,
+		DOWN = 4
+	};
+
 	enum Components {
 		Transform,
 		SpriteRenderer,
@@ -21,7 +29,7 @@ namespace Engine {
 	struct TransformComponent : public Component {
 		glm::vec3 position = glm::vec3(0.f);
 		float rotation = 0.f;
-		glm::vec2 scale = glm::vec2(1.f);
+		glm::vec2 scale = glm::vec2(32.f);
 
 		TransformComponent() = default;
 		TransformComponent(const TransformComponent&) = default;
@@ -48,6 +56,7 @@ namespace Engine {
 		glm::vec3 acceleration = glm::vec3(0.f);
 		float rotationAcceleration = 0.f;
 		glm::vec2 scaleAcceleration = glm::vec2(0.f);
+		Direction currentDirection;
 
 		AccelerationComponent() = default;
 		AccelerationComponent(const AccelerationComponent&) = default;

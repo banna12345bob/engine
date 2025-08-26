@@ -11,8 +11,8 @@ namespace Engine {
 	public:
 		Entity(std::string name);
 
-		void OnUpdate(Timestep ts);
-		void OnRender();
+		virtual void OnUpdate(Timestep ts);
+		virtual void OnRender();
 		TransformComponent* GetTransform();
 		SpriteRendererComponent* GetSpriteRenderer();
 		AccelerationComponent* GetAcceleration();
