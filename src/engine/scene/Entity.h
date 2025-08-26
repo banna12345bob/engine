@@ -16,6 +16,7 @@ namespace Engine {
 		TransformComponent* GetTransform();
 		SpriteRendererComponent* GetSpriteRenderer();
 		VelocityComponent* GetVelocity();
+		void Move(glm::vec2 dir, int acceleration, int maxSpeed, Engine::Timestep ts);
 	public:
 		std::string name;
 		bool hide = false;
