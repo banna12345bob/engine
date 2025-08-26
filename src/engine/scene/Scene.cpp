@@ -6,7 +6,8 @@ namespace Engine {
 	void Scene::UpdateScene(Timestep ts)
 	{
 		for (auto it = m_Entities.begin(); it != m_Entities.end(); it++)
-			it->second->OnUpdate(ts);
+			if (it->second->active)
+				it->second->OnUpdate(ts);
 	}
 
 	void Scene::RenderScene(Camera* camera)

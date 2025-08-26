@@ -20,6 +20,8 @@ namespace Engine {
 	public:
 		std::string name;
 		bool hide = false;
+
+		bool active = true;
 	protected:
 		std::unordered_map<Components, Component*> m_Components;
 	};
