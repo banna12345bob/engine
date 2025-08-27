@@ -20,3 +20,4 @@
 #include "engine/events/Input.h"
 
 #include "engine/scene/Scene.h"
+#include "engine/scene/BoundingBox.h"
