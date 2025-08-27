@@ -6,6 +6,11 @@
 
 namespace Engine {
 
+	struct BoundingBox {
+		// Offset refers to offset from position
+		float xOffset = 0, yOffset = 0, width = 0, height = 0;
+	};
+
 	class Entity
 	{
 	public:

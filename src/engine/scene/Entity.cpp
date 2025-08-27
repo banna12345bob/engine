@@ -44,17 +44,20 @@ namespace Engine {
 			if (abs(GetVelocity()->velocity.x) < maxSpeed) {
 				GetVelocity()->velocity.x += acceleration * dir.x * ts;
 			}
+			else {
+				GetVelocity()->velocity.x = maxSpeed * dir.x;
+			}
 		}
-		else if (dir.x == 0) {																					// Not moving on this axis
+		else if (dir.x == 0) {																			// Not moving on this axis
 			if (GetVelocity()->velocity.x != 0) {														// Need to decelerate
-				int sign = (GetVelocity()->velocity.x > 0) - (GetVelocity()->velocity.x < 0);	// Hack I found on Stack Overflow
-				GetVelocity()->velocity.x += acceleration * ts * -sign;
+				int sign = (GetVelocity()->velocity.x > 0) - (GetVelocity()->velocity.x < 0);			// Hack I found on Stack Overflow
+				GetVelocity()->velocity.x += acceleration * ts * -sign * 2.f;							// Decelerate faster than accelerate
 				if (GetVelocity()->velocity.x * sign < 0) {												// If we have gone past 0, set it to 0
 					GetVelocity()->velocity.x = 0;
 				}
 			}
 		}
-		else {																									// Going in opposite direction
+		else {																							// Going in opposite direction
 			GetVelocity()->velocity.x = acceleration * dir.x * ts;
 		}
 
@@ -62,6 +65,9 @@ namespace Engine {
 		if ((dir.y != 0 && GetVelocity()->velocity.y == 0) || dir.y * GetVelocity()->velocity.y > 0) {
 			if (abs(GetVelocity()->velocity.y) < maxSpeed) {
 				GetVelocity()->velocity.y += acceleration * dir.y * ts;
+			}
+			else {
+				GetVelocity()->velocity.y = maxSpeed * dir.y;
 			}
 		}
 		else if (dir.y == 0) {
