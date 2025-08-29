@@ -22,7 +22,7 @@ namespace Engine {
 		actualDisplacement = displacement;
 
 		// This is needed because we are working with floats which can be a little inaccurate
-		float padding = 0.005f;
+		float padding = 0.000002f;
 
 		if (displacement.x != 0) {
 			newBox.x += displacement.x;

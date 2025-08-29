@@ -21,8 +21,7 @@ namespace Engine {
 
 		// Little bit of tweaking because we are working with the slightly inaccurate floats
 		bool Intersect(BoundingBox other) {
-			float adjustment = 0.00f;
-			return left() < other.right() - adjustment && right() > other.left() + adjustment && bottom() < other.top() - adjustment && top() > other.bottom() + adjustment;
+			return left() < other.right() && right() > other.left() && bottom() < other.top() && top() > other.bottom();
 		}
 	};
 }
