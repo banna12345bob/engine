@@ -1,11 +1,12 @@
 #include "Entity.h"
+#include "Scene.h"
 
 #include "engine/renderer/Renderer2D.h"
 
 namespace Engine {
 
-	Entity::Entity(std::string name)
-	: name(name)
+	Entity::Entity(std::string name, Scene& scene)
+	: name(name), m_Scene(scene)
 	{
 		TransformComponent* transformComponent = new TransformComponent();
 		SpriteRendererComponent* spriteRendererComponent = new SpriteRendererComponent();
@@ -14,13 +15,32 @@ namespace Engine {
 		m_Components[Components::Transform] = transformComponent;
 		m_Components[Components::SpriteRenderer] = spriteRendererComponent;
 		m_Components[Components::Velocity] = accelerationComponent;
+
+		// Default, size of one tile
+		m_BoundingBox = BoundingBox(-8, -8, 16, 16);
 	}
 
 	void Entity::OnUpdate(Timestep ts)
 	{
-		GetTransform()->position += GetVelocity()->velocity * ts.GetSeconds();
+		
 		GetTransform()->rotation += GetVelocity()->rotationVelocity * ts.GetSeconds();
 		GetTransform()->scale += GetVelocity()->scaleVelocity * ts.GetSeconds();
+
+		// Check for collisions (does not account for scale)
+		BoundingBox box = GetBoundingBox(GetTransform()->position);
+		glm::vec2 displacement = glm::vec2(GetVelocity()->velocity.x * ts.GetSeconds(), GetVelocity()->velocity.y * ts.GetSeconds());
+		glm::vec2 actualDisplacement;
+		m_Scene.CheckCollisions(box, displacement, actualDisplacement);
+		GetTransform()->position += glm::vec3(actualDisplacement.x, actualDisplacement.y, 0);
+
+		// See if velocity needs to be reset
+		if (displacement.x != actualDisplacement.x) {
+			GetVelocity()->velocity.x = 0;
+		}
+		if (displacement.y != actualDisplacement.y) {
+			GetVelocity()->velocity.y = 0;
+		}
+
 	}
 
 	void Entity::OnRender()
@@ -33,7 +53,6 @@ namespace Engine {
 		}
 	}
 
-	// After writing this, I realised it is probably better to do all calculations with a normalised vector then multiply by max speed at the end, but I won't be changing it now
 	void Entity::Move(glm::vec2 dir, int acceleration, int entityMaxSpeed, Timestep ts) {
 
 		// If the player is moving diagonally, the max speed on either axis is / root 2
@@ -82,6 +101,10 @@ namespace Engine {
 		else {
 			GetVelocity()->velocity.y = acceleration * dir.y * ts;
 		}
+	}
+
+	BoundingBox Entity::GetBoundingBox(glm::vec2 pos) {
+		return BoundingBox(pos.x + m_BoundingBox.x, pos.y + m_BoundingBox.y, m_BoundingBox.width, m_BoundingBox.height);
 	}
 
 	TransformComponent* Entity::GetTransform()

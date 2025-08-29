@@ -1,15 +1,18 @@
 #pragma once
 
 #include "Components.h"
+#include "BoundingBox.h"
 
 #include "engine/core/Timestep.h"
 
 namespace Engine {
 
+	class Scene;
+
 	class Entity
 	{
 	public:
-		Entity(std::string name);
+		Entity(std::string name, Scene& scene);
 
 		virtual void OnUpdate(Timestep ts);
 		virtual void OnRender();
@@ -17,6 +20,8 @@ namespace Engine {
 		SpriteRendererComponent* GetSpriteRenderer();
 		VelocityComponent* GetVelocity();
 		void Move(glm::vec2 dir, int acceleration, int maxSpeed, Engine::Timestep ts);
+
+		BoundingBox GetBoundingBox(glm::vec2 pos);
 	public:
 		std::string name;
 		bool hide = false;
@@ -24,6 +29,8 @@ namespace Engine {
 		bool active = true;
 	protected:
 		std::unordered_map<Components, Component*> m_Components;
+		Scene& m_Scene;
+		BoundingBox m_BoundingBox;
 	};
 }
 
