@@ -28,6 +28,21 @@ namespace Engine {
 
 		virtual bool isSubTexture() { return false; }
 
+		virtual void flipAcrossYAxis() {
+			glm::vec2 tempTexCoords[4] = {
+			m_TexCoords[1],
+			m_TexCoords[0],
+			m_TexCoords[3],
+			m_TexCoords[2]
+			};
+
+			m_TexCoords[0] = tempTexCoords[0];
+			m_TexCoords[1] = tempTexCoords[1];
+			m_TexCoords[2] = tempTexCoords[2];
+			m_TexCoords[3] = tempTexCoords[3];
+			return;
+		}
+
 		static Ref<Texture2D> Create(const uint32_t width, const uint32_t height);
 		static Ref<Texture2D> Create(const std::string& path);
 	private:
@@ -47,6 +62,20 @@ namespace Engine {
 		virtual uint32_t getWidth() const override { return m_Texture->getWidth(); }
 		virtual uint32_t getHeight() const override { return m_Texture->getHeight(); }
 		virtual const glm::vec2* getTextureCoords() const override { return m_TexCoords; }
+		virtual void flipAcrossYAxis() override {
+			glm::vec2 tempTexCoords[4] = {
+			m_TexCoords[1],
+			m_TexCoords[0],
+			m_TexCoords[3],
+			m_TexCoords[2]
+			};
+
+			m_TexCoords[0] = tempTexCoords[0];
+			m_TexCoords[1] = tempTexCoords[1];
+			m_TexCoords[2] = tempTexCoords[2];
+			m_TexCoords[3] = tempTexCoords[3];
+			return;
+		}
 
 		virtual bool isSubTexture() override { return true; }
 
