@@ -25,15 +25,8 @@ namespace Engine {
 	{
 	public:
 		virtual const glm::vec2* getTextureCoords() const override {
-			if (m_Flipped) {
-				glm::vec2 flippedTexCoords[4] = {
-				m_TexCoords[1],
-				m_TexCoords[0],
-				m_TexCoords[3],
-				m_TexCoords[2]
-				};
-				return flippedTexCoords;
-			}
+			if (m_Flipped)
+				return m_FlippedTexCoords;
 			return m_TexCoords;
 		}
 
@@ -50,6 +43,12 @@ namespace Engine {
 			{ 1.0f, 1.0f },
 			{ 0.0f, 1.0f }
 		};
+		glm::vec2 m_FlippedTexCoords[4] = {
+			{ 1.0f, 0.0f },
+			{ 0.0f, 0.0f },
+			{ 0.0f, 1.0f },
+			{ 1.0f, 1.0f }
+		};
 		bool m_Flipped = false;
 	};
 
@@ -61,15 +60,8 @@ namespace Engine {
 		virtual uint32_t getWidth() const override { return m_Texture->getWidth(); }
 		virtual uint32_t getHeight() const override { return m_Texture->getHeight(); }
 		virtual const glm::vec2* getTextureCoords() const override { 
-			if (m_Flipped) {
-				glm::vec2 flippedTexCoords[4] = {
-				m_TexCoords[1],
-				m_TexCoords[0],
-				m_TexCoords[3],
-				m_TexCoords[2]
-					};
-				return flippedTexCoords;
-			}
+			if (m_Flipped)
+				return m_FlippedTexCoords;
 			return m_TexCoords; }
 		virtual void flipAcrossYAxis(bool value) override { m_Flipped = value;	}
 
@@ -88,6 +80,7 @@ namespace Engine {
 		Ref<Texture2D> m_Texture;
 
 		glm::vec2 m_TexCoords[4];
+		glm::vec2 m_FlippedTexCoords[4];
 		glm::vec2 m_SpriteSize;
 		bool m_Flipped = false;
 	};

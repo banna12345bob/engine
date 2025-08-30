@@ -36,13 +36,18 @@ namespace Engine {
 		m_TexCoords[2] = { max.x, max.y };
 		m_TexCoords[3] = { min.x, max.y };
 
+		m_FlippedTexCoords[0] = m_TexCoords[1];
+		m_FlippedTexCoords[1] = m_TexCoords[0];
+		m_FlippedTexCoords[2] = m_TexCoords[3];
+		m_FlippedTexCoords[3] = m_TexCoords[2];
+
 		glm::vec2 cellsize = { (min.x * texture->getWidth()) / coords.x, (min.y * texture->getHeight()) / coords.y };
 		m_SpriteSize = { ((max.x * texture->getWidth()) / cellsize.x) - coords.x, ((max.y * texture->getHeight()) / cellsize.y) - coords.y };
 	}
 
 	Ref<Texture2D> SubTexture2D::CreateFromCoords(const Ref<Texture2D>& texture, const glm::vec2& coords, const glm::vec2& cellSize, const glm::vec2& spriteSize)
 	{
-		glm::vec2 min = { (coords.x * cellSize.x) / texture->getWidth(), (coords.y * cellSize.y) / texture->getHeight() };
+		glm::vec2 min = { (coords.x * cellSize.x) / texture->getWidth()+0.0001f, (coords.y * cellSize.y) / texture->getHeight() };
 		glm::vec2 max = { ((coords.x + spriteSize.x) * cellSize.x) / texture->getWidth(), ((coords.y + spriteSize.y) * cellSize.y) / texture->getHeight() };
 		return CreateRef<SubTexture2D>(texture, min, max, coords);
 	}
