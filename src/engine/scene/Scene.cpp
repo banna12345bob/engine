@@ -73,9 +73,9 @@ namespace Engine {
 		}
 
 		// Render walls
-		for (auto it = m_CollisionBoxes.begin(); it != m_CollisionBoxes.end(); it++) {
-			Renderer2D::DrawQuad(glm::vec3(it->x + it->width / 2, it->y + it->height / 2, 0), it->size(), 0.f, glm::vec4(1, 1, 0, 1));
-		}
+		//for (auto it = m_CollisionBoxes.begin(); it != m_CollisionBoxes.end(); it++) {
+		//	Renderer2D::DrawQuad(glm::vec3(it->x + it->width / 2, it->y + it->height / 2, 0), it->size(), 0.f, glm::vec4(1, 1, 0, 1));
+		//}
 
 		Renderer2D::EndScene();
 	}
