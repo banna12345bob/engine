@@ -2,6 +2,7 @@
 
 #include "Components.h"
 #include "BoundingBox.h"
+#include "UUID.h"
 
 #include "engine/core/Timestep.h"
 
@@ -27,6 +28,8 @@ namespace Engine {
 		bool hide = false;
 
 		bool active = true;
+
+		UUID EntityUUID = UUID(0);
 	protected:
 		std::unordered_map<Components, Component*> m_Components;
 		Scene& m_Scene;

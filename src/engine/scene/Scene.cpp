@@ -80,9 +80,15 @@ namespace Engine {
 		Renderer2D::EndScene();
 	}
 
-	void Scene::AddEntity(Entity* entity)
+	void Scene::AddEntity(Entity* entity, UUID* uuid)
 	{
-		m_Entities[entity->name] = entity;
+		UUID entityUUID = UUID::GenerateUUID();
+		if (uuid)
+		{
+			*uuid = entityUUID;
+		}
+		entity->EntityUUID = entityUUID;
+		m_Entities[entityUUID] = entity;
 	}
 
 	void Scene::AddCollisionBox(BoundingBox box)
@@ -94,12 +100,13 @@ namespace Engine {
 		m_CollisionBoxes.insert(m_CollisionBoxes.end(), boxes.begin(), boxes.end());
 	}
 
-	Entity* Scene::GetEntity(std::string name)
+	Entity* Scene::GetEntity(UUID uuid)
 	{
-		if (m_Entities.contains(name))
-			return m_Entities[name];
+		if (m_Entities.contains(uuid))
+			return m_Entities[uuid];
 		else
-			EG_CORE_ERROR("Cannot find entity named: {0}", name);
+			EG_CORE_ERROR("Cannot find entity named: {0}", uuid.ID);
 		return nullptr;
 	}
+
 }
