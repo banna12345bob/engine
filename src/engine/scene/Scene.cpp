@@ -27,12 +27,12 @@ namespace Engine {
 		if (displacement.x != 0) {
 			newBox.x += displacement.x;
 			for (auto it = m_CollisionBoxes.begin(); it != m_CollisionBoxes.end(); it++) {
-				if (newBox.Intersect(*it)) {
+				if (newBox.Intersect(*it->second)) {
 					if (displacement.x > 0) {
-						actualDisplacement.x = displacement.x - (newBox.right() - it->left()) - padding;
+						actualDisplacement.x = displacement.x - (newBox.right() - it->second->left()) - padding;
 					}
 					else {
-						actualDisplacement.x = displacement.x + (it->right() - newBox.left()) + padding;
+						actualDisplacement.x = displacement.x + (it->second->right() - newBox.left()) + padding;
 					}
 					collide = true;
 					break;
@@ -45,12 +45,12 @@ namespace Engine {
 		if (displacement.y != 0) {
 			newBox.y += displacement.y;
 			for (auto it = m_CollisionBoxes.begin(); it != m_CollisionBoxes.end(); it++) {
-				if (newBox.Intersect(*it)) {
+				if (newBox.Intersect(*it->second)) {
 					if (displacement.y > 0) {
-						actualDisplacement.y = displacement.y - (newBox.top() - it->bottom()) - padding;
+						actualDisplacement.y = displacement.y - (newBox.top() - it->second->bottom()) - padding;
 					}
 					else {
-						actualDisplacement.y = displacement.y + (it->top() - newBox.bottom()) + padding;
+						actualDisplacement.y = displacement.y + (it->second->top() - newBox.bottom()) + padding;
 					}
 					collide = true;
 					break;
@@ -91,14 +91,25 @@ namespace Engine {
 		m_Entities[entityUUID] = entity;
 	}
 
-	void Scene::AddCollisionBox(BoundingBox box)
+	void Scene::AddCollisionBox(BoundingBox* box, UUID* uuid)
 	{
-		m_CollisionBoxes.push_back(box);
+		UUID boxUUID = UUID::GenerateUUID();
+		if (uuid)
+		{
+			*uuid = boxUUID;
+		}
+		box->BoxUUID = boxUUID;
+		m_CollisionBoxes[boxUUID] = box;
 	}
-	void Scene::AddCollisionBoxes(std::vector<BoundingBox> boxes)
+	bool Scene::RemoveCollisionBox(UUID uuid)
 	{
-		m_CollisionBoxes.insert(m_CollisionBoxes.end(), boxes.begin(), boxes.end());
+		m_CollisionBoxes.erase(uuid);
+		return true;
 	}
+	//void Scene::AddCollisionBoxes(std::vector<BoundingBox> boxes)
+	//{
+	//	m_CollisionBoxes.insert(m_CollisionBoxes.end(), boxes.begin(), boxes.end());
+	//}
 
 	Entity* Scene::GetEntity(UUID uuid)
 	{
@@ -107,6 +118,12 @@ namespace Engine {
 		else
 			EG_CORE_ERROR("Cannot find entity named: {0}", uuid.ID);
 		return nullptr;
+	}
+
+	bool Scene::RemoveEntity(UUID uuid)
+	{
+		m_Entities.erase(uuid);
+		return true;
 	}
 
 }
