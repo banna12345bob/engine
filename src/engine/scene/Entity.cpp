@@ -53,14 +53,11 @@ namespace Engine {
 		}
 	}
 
-	void Entity::Move(glm::vec2 dir, int acceleration, int entityMaxSpeed, Timestep ts) {
-
-		// If the player is moving diagonally, the max speed on either axis is / root 2
-		float maxSpeed = dir.x != 0 && dir.y != 0 ? entityMaxSpeed * 0.707f: entityMaxSpeed;
+	void Entity::Move(glm::vec2 dir, int acceleration, int maxSpeed, Timestep ts) {
 
 		// X axis
 		if ((dir.x != 0 && GetVelocity()->velocity.x == 0) || dir.x * GetVelocity()->velocity.x > 0) {	// Same direction or just started moving
-			if (abs(GetVelocity()->velocity.x) < maxSpeed) {
+			if (abs(GetVelocity()->velocity.x) < maxSpeed * abs(dir.x)) {
 				GetVelocity()->velocity.x += acceleration * dir.x * ts;
 			}
 			else {
@@ -82,7 +79,7 @@ namespace Engine {
 
 		// Y axis
 		if ((dir.y != 0 && GetVelocity()->velocity.y == 0) || dir.y * GetVelocity()->velocity.y > 0) {
-			if (abs(GetVelocity()->velocity.y) < maxSpeed) {
+			if (abs(GetVelocity()->velocity.y) < maxSpeed * abs(dir.y)) {
 				GetVelocity()->velocity.y += acceleration * dir.y * ts;
 			}
 			else {
