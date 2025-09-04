@@ -6,6 +6,10 @@
 #include "engine/renderer/Renderer2D.h"
 #include "engine/renderer/RenderCommand.h"
 
+#include "engine/debug/AudioDebugger.h"
+#include "engine/debug/ImGuiRendererStats.h"
+#include "engine/debug/SceneDebugger.h"
+
 #include <GLFW/glfw3.h>
 
 namespace Engine {
@@ -29,8 +33,8 @@ namespace Engine {
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
 
-		PushLayer(new AudioDebugger);
-		PushLayer(new ImGuiRendererStats);
+		PushOverlay(new AudioDebugger);
+		PushOverlay(new ImGuiRendererStats);
 	}
 
 	Application::~Application()

@@ -22,6 +22,8 @@ namespace Engine {
 	private:
 		std::unordered_map<UUID, Entity*> m_Entities;
 		std::unordered_map<UUID, BoundingBox*> m_CollisionBoxes;
+
+		friend class SceneDebugger;
 	};
 }
 

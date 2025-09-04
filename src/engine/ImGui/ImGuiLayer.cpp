@@ -12,6 +12,7 @@
 #include <backends/imgui_impl_opengl3.h>
 
 #include "engine/core/Application.h"
+#include "engine/debug/Instrumentor.h"
 
 
 namespace Engine {

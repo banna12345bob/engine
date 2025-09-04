@@ -6,9 +6,14 @@
 namespace Engine {
 	void Scene::UpdateScene(Timestep ts)
 	{
-		for (auto it = m_Entities.begin(); it != m_Entities.end(); it++)
+		for (auto it = m_Entities.begin(); it != m_Entities.end();) {
 			if (it->second->active)
 				it->second->OnUpdate(ts);
+			if (it->second->needsDelete)
+				m_Entities.erase(it++);
+			else
+				++it;
+		}
 	}
 
 	/**
@@ -122,7 +127,7 @@ namespace Engine {
 
 	bool Scene::RemoveEntity(UUID uuid)
 	{
-		m_Entities.erase(uuid);
+		m_Entities[uuid]->needsDelete = true;
 		return true;
 	}
 

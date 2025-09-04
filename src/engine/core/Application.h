@@ -5,9 +5,6 @@
 #include "engine/core/Window.h"
 #include "engine/audio/audioPlayer.h"
 
-#include "engine/debug/AudioDebugger.h"
-#include "engine/debug/ImGuiRendererStats.h"
-
 #include "engine/ImGui/ImGuiLayer.h"
 
 #include "Layer.h"
@@ -41,9 +38,6 @@ namespace Engine {
 		Scope<Window> m_Window;
 		Scope<AudioPlayer> m_AudioPlayer;
 		ImGuiLayer* m_ImGuiLayer;
-
-		AudioDebugger* m_AudioDebuggerLayer = new AudioDebugger();
-		ImGuiRendererStats* m_RendererStatsLayer = new ImGuiRendererStats();
 
 		LayerStack m_layerStack;
 

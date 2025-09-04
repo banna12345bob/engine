@@ -16,6 +16,9 @@
 
 #include "engine/utils/Vector2i.h"
 
+#include "engine/debug/Instrumentor.h"
+#include "engine/debug/SceneDebugger.h"
+
 #include "engine/events/AllEvents.h"
 #include "engine/events/Input.h"
 

@@ -29,6 +29,8 @@ namespace Engine {
 
 		bool active = true;
 
+		bool needsDelete = false;
+
 		UUID EntityUUID = UUID(0);
 	protected:
 		std::unordered_map<Components, Component*> m_Components;
