@@ -13,10 +13,11 @@ namespace Engine {
 		Velocity
 	};
 
-	struct Component {
-		std::string componentName;
+	std::string ComponentToString(Components component);
 
+	struct Component {
 		Component() = default;
+		virtual void ImGuiRender() = 0;
 	};
 
 	struct TransformComponent : public Component {
@@ -27,9 +28,9 @@ namespace Engine {
 		TransformComponent() = default;
 		TransformComponent(const TransformComponent&) = default;
 		TransformComponent(const glm::vec3 position)
-			: position(position) {
-			componentName = "Transform";
-		}
+			: position(position) {}
+
+		virtual void ImGuiRender() override;
 	};
 
 	struct SpriteRendererComponent : public Component {
@@ -40,9 +41,9 @@ namespace Engine {
 		SpriteRendererComponent() = default;
 		SpriteRendererComponent(const SpriteRendererComponent&) = default;
 		SpriteRendererComponent(const glm::vec4& colour)
-			: colour(colour) {
-			componentName = "SpritRenderer";
-		}
+			: colour(colour) {}
+
+		virtual void ImGuiRender() override;
 	};
 
 	struct VelocityComponent : public Component {
@@ -53,8 +54,8 @@ namespace Engine {
 		VelocityComponent() = default;
 		VelocityComponent(const VelocityComponent&) = default;
 		VelocityComponent(const glm::vec3 velocity)
-			: velocity(velocity) {
-			componentName = "Velocity";
-		}
+			: velocity(velocity) {}
+
+		virtual void ImGuiRender() override;
 	};
 }

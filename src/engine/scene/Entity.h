@@ -23,6 +23,7 @@ namespace Engine {
 		void Move(glm::vec2 dir, int acceleration, int maxSpeed, Engine::Timestep ts);
 
 		BoundingBox GetBoundingBox(glm::vec2 pos);
+		std::unordered_map<Components, Component*>* GetComponents() { return &m_Components; }
 	public:
 		std::string name;
 		bool hide = false;

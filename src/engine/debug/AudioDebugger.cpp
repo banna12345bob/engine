@@ -7,10 +7,14 @@
 
 namespace Engine {
 
-	AudioDebugger::AudioDebugger()
+	AudioDebugger::AudioDebugger(std::string path)
 		: Layer("AudioDebugger")
 	{
-		DirectoryIterator("assets\\audio");
+		m_files = std::vector<std::string>();
+		if (!std::filesystem::exists(path))
+			return;
+
+		DirectoryIterator(path);
 	}
 
 	void AudioDebugger::OnImGuiRender() {

@@ -19,17 +19,20 @@ namespace Engine {
 		EG_PROFILE_FUNCTION();
 		if (!this->m_ShowWindow)
 			return;
-		ImGui::Begin("Scene Debugger");
+		ImGui::Begin("Scene Debugger", &m_ShowWindow);
 		for (auto it = m_Scene.m_Entities.begin(); it != m_Scene.m_Entities.end(); it++)
 		{
 			if (ImGui::TreeNode(it->second->name.c_str()))
 			{
 				ImGui::Begin(it->second->name.c_str());
-				float pos[3] = { it->second->GetTransform()->position.x, it->second->GetTransform()->position.y, it->second->GetTransform()->position.z };
-				ImGui::DragFloat3("pos", pos);
-				it->second->GetTransform()->position.x = pos[0];
-				it->second->GetTransform()->position.y = pos[1];
-				it->second->GetTransform()->position.z = pos[2];
+				for (auto component = it->second->GetComponents()->begin(); component != it->second->GetComponents()->end(); component++)
+				{
+					if (ImGui::TreeNode(ComponentToString(component->first).c_str()))
+					{
+						component->second->ImGuiRender();
+						ImGui::TreePop();
+					}
+				}
 				ImGui::Checkbox("Hide", &it->second->hide);
 				if (ImGui::Button("Delete"))
 					m_Scene.RemoveEntity(it->first);

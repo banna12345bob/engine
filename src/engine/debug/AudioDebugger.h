@@ -6,13 +6,14 @@
 #include "engine/events/AllEvents.h"
 
 #include <filesystem>
+#include <string>
 
 namespace Engine {
 
 	class AudioDebugger : public Layer
 	{
 	public:
-		AudioDebugger();
+		AudioDebugger(std::string path = "assets\\audio");
 		~AudioDebugger() = default;
 
 		virtual void OnImGuiRender() override;
