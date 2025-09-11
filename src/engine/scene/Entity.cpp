@@ -5,7 +5,7 @@
 
 namespace Engine {
 
-	Entity::Entity(std::string name, Scene& scene)
+	Entity::Entity(std::string name, Scene* scene)
 	: name(name), m_Scene(scene)
 	{
 		TransformComponent* transformComponent = new TransformComponent();
@@ -30,7 +30,7 @@ namespace Engine {
 		BoundingBox box = GetBoundingBox(GetTransform()->position);
 		glm::vec2 displacement = glm::vec2(GetVelocity()->velocity.x * ts.GetSeconds(), GetVelocity()->velocity.y * ts.GetSeconds());
 		glm::vec2 actualDisplacement;
-		m_Scene.CheckCollisions(box, displacement, actualDisplacement);
+		m_Scene->CheckCollisions(box, displacement, actualDisplacement);
 		GetTransform()->position += glm::vec3(actualDisplacement.x, actualDisplacement.y, 0);
 
 		// See if velocity needs to be reset

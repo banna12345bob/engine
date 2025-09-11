@@ -8,7 +8,7 @@ namespace Engine {
 	class SceneDebugger : public Layer
 	{
 	public:
-		SceneDebugger(Scene& scene);
+		SceneDebugger(Scene* scene);
 		~SceneDebugger() = default;
 
 		virtual void OnImGuiRender() override;
@@ -18,7 +18,7 @@ namespace Engine {
 
 	private:
 		bool m_ShowWindow = false;
-		Scene& m_Scene;
+		Scene* m_Scene;
 	};
 }
 

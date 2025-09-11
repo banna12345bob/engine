@@ -29,10 +29,13 @@ namespace Engine {
 		EG_CORE_ASSERT(success, "Could not intialise GLFW!");
 		glfwSetErrorCallback(GLFWErrorCallback);
 
+		if (RenderAPI::getAPI() == RenderAPI::API::OpenGL) {
 	#if defined(EG_DEBUG)
-		if (RenderAPI::getAPI() == RenderAPI::API::OpenGL)
 			glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 	#endif
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+		}
 
 		m_window = glfwCreateWindow((int)m_data.width, (int)m_data.height, m_data.title.c_str(), nullptr, nullptr);
 

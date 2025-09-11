@@ -1,6 +1,8 @@
 #include "Components.h"
 
 #include <imgui.h>
+#include <SDL3/SDL_dialog.h>
+#include <filesystem>
 
 namespace Engine {
 
@@ -43,15 +45,21 @@ namespace Engine {
 		colour.b = tempColour[2];
 		colour.a = tempColour[3];
 
-		// TODO: Probably just use the window file dialogue to select the file
-		// I can't be bothered doing this now though
-		if (ImGui::Button("Select Texture"))
-			ImGui::OpenPopup("File selector");
+		SDL_DialogFileFilter filter = {"PNG images",  "png"};
 
-		if (ImGui::BeginPopup("File selector")) {
-			ImGui::Text("TODO: Open file dialogue");
-			ImGui::EndPopup();
+		if (ImGui::Button("Select Texture")) {			
+			SDL_ShowOpenFileDialog([](void* userdata, const char* const* filelist, int filter)
+				{
+					if (!*filelist)
+						return;
+					SpriteRendererComponent* spriteRenderer = (SpriteRendererComponent*)userdata;
+					spriteRenderer->filepath = *filelist;
+				},
+				this, nullptr, &filter, 1, (std::filesystem::current_path().string() + "\\assets\\").c_str(), false);
 		}
+
+		if (!filepath.empty() && filepath != texture->getFilePath())
+			texture = Texture2D::Create(filepath);
 
 		ImGui::DragFloat("Tiling Factor", &tilingFactor, 0.05f);
 	}

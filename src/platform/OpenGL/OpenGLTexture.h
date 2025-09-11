@@ -15,6 +15,7 @@ namespace Engine {
 
 		virtual uint32_t getWidth() const override { return m_Width; }
 		virtual uint32_t getHeight() const override { return m_Height; }
+		virtual std::string getFilePath() const override { return m_Path; }
 
 		virtual void SetData(void* data, uint32_t size) override;
 

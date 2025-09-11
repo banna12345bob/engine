@@ -44,6 +44,9 @@ namespace Engine {
 			: colour(colour) {}
 
 		virtual void ImGuiRender() override;
+
+	private:
+		std::string filepath;
 	};
 
 	struct VelocityComponent : public Component {

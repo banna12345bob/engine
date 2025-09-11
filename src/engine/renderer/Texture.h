@@ -13,6 +13,7 @@ namespace Engine {
 
 		virtual uint32_t getWidth() const = 0;
 		virtual uint32_t getHeight() const = 0;
+		virtual std::string getFilePath() const = 0;
 		virtual const glm::vec2* getTextureCoords() const = 0;
 
 		virtual void SetData(void* data, uint32_t size) = 0;
@@ -59,7 +60,8 @@ namespace Engine {
 
 		virtual uint32_t getWidth() const override { return m_Texture->getWidth(); }
 		virtual uint32_t getHeight() const override { return m_Texture->getHeight(); }
-		virtual const glm::vec2* getTextureCoords() const override { 
+		virtual std::string getFilePath() const override { return m_Texture->getFilePath(); }
+		virtual const glm::vec2* getTextureCoords() const override {
 			if (m_Flipped)
 				return m_FlippedTexCoords;
 			return m_TexCoords; }

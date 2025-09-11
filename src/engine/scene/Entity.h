@@ -13,7 +13,7 @@ namespace Engine {
 	class Entity
 	{
 	public:
-		Entity(std::string name, Scene& scene);
+		Entity(std::string name, Scene* scene);
 
 		virtual void OnUpdate(Timestep ts);
 		virtual void OnRender();
@@ -35,7 +35,7 @@ namespace Engine {
 		UUID EntityUUID = UUID(0);
 	protected:
 		std::unordered_map<Components, Component*> m_Components;
-		Scene& m_Scene;
+		Scene* m_Scene;
 		BoundingBox m_BoundingBox;
 	};
 }

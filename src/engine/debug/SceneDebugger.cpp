@@ -9,7 +9,7 @@
 
 namespace Engine {
 
-	SceneDebugger::SceneDebugger(Scene& scene)
+	SceneDebugger::SceneDebugger(Scene* scene)
 		: Layer("SceneDebugger"), m_Scene(scene)
 	{
 	}
@@ -20,7 +20,7 @@ namespace Engine {
 		if (!this->m_ShowWindow)
 			return;
 		ImGui::Begin("Scene Debugger", &m_ShowWindow);
-		for (auto it = m_Scene.m_Entities.begin(); it != m_Scene.m_Entities.end(); it++)
+		for (auto it = m_Scene->m_Entities.begin(); it != m_Scene->m_Entities.end(); it++)
 		{
 			if (ImGui::TreeNode(it->second->name.c_str()))
 			{
@@ -35,7 +35,7 @@ namespace Engine {
 				}
 				ImGui::Checkbox("Hide", &it->second->hide);
 				if (ImGui::Button("Delete"))
-					m_Scene.RemoveEntity(it->first);
+					m_Scene->RemoveEntity(it->first);
 				ImGui::End();
 
 				ImGui::TreePop();
