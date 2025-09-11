@@ -58,7 +58,7 @@ namespace Engine {
 				this, nullptr, &filter, 1, (std::filesystem::current_path().string() + "\\assets\\").c_str(), false);
 		}
 
-		if (!filepath.empty() && filepath != texture->getFilePath())
+		if (!filepath.empty() && (!texture || filepath != texture->getFilePath()))
 			texture = Texture2D::Create(filepath);
 
 		ImGui::DragFloat("Tiling Factor", &tilingFactor, 0.05f);
