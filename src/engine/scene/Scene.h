@@ -21,7 +21,7 @@ namespace Engine {
 		Entity AddEntityWithUUID(UUID uuid, const std::string& name);
 		Entity GetEntity(UUID uuid);
 		Entity GetEntity(std::string name);
-		bool RemoveEntity(UUID uuid);
+		bool RemoveEntity(Entity entity);
 		void AddCollisionBox(BoundingBox* box, UUID* uuid = nullptr);
 		bool RemoveCollisionBox(UUID uuid);
 		//void AddCollisionBoxes(std::vector<BoundingBox> boxes);
