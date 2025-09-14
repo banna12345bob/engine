@@ -2,18 +2,19 @@
 #include <vector>
 
 #include "engine/renderer/Renderer2D.h"
+#include "Entity.h"
 
 namespace Engine {
 	void Scene::UpdateScene(Timestep ts)
 	{
-		for (auto it = m_Entities.begin(); it != m_Entities.end();) {
-			if (it->second->active)
-				it->second->OnUpdate(ts);
-			if (it->second->needsDelete)
-				m_Entities.erase(it++);
-			else
-				++it;
-		}
+		//for (auto it = m_Entities.begin(); it != m_Entities.end();) {
+		//	if (it->second->active)
+		//		it->second->OnUpdate(ts);
+		//	if (it->second->needsDelete)
+		//		m_Entities.erase(it++);
+		//	else
+		//		++it;
+		//}
 	}
 
 	/**
@@ -71,10 +72,20 @@ namespace Engine {
 		Renderer2D::BeginScene(camera);
 		for (auto it = m_Entities.begin(); it != m_Entities.end(); it++)
 		{
-			if (it->second->hide)
+			if (Entity{ it->second, this }.GetComponent<MetaDataComponent>().hide)
 				continue;
 
-			it->second->OnRender();
+			{
+				auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+				for (auto entity : group)
+				{
+					auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+					if (sprite.texture)
+						Renderer2D::DrawQuad(transform.position, transform.scale, transform.rotation, sprite.texture, sprite.colour, sprite.tilingFactor);
+					else
+						Renderer2D::DrawQuad(transform.position, transform.scale, transform.rotation, sprite.colour);
+				}
+			}
 		}
 
 		// Render walls
@@ -85,15 +96,20 @@ namespace Engine {
 		Renderer2D::EndScene();
 	}
 
-	void Scene::AddEntity(Entity* entity, UUID* uuid)
+	Entity Scene::AddEntity(const std::string& name)
 	{
-		UUID entityUUID = UUID::GenerateUUID();
-		if (uuid)
-		{
-			*uuid = entityUUID;
-		}
-		entity->EntityUUID = entityUUID;
-		m_Entities[entityUUID] = entity;
+		return AddEntityWithUUID(UUID::GenerateUUID(), name);
+	}
+
+	Entity Scene::AddEntityWithUUID(UUID uuid, const std::string& name)
+	{
+		Entity entity = { m_Registry.create(), this };
+		entity.AddComponent<MetaDataComponent>(uuid, name, false);
+		entity.AddComponent<TransformComponent>();
+
+		m_Entities[uuid] = entity;
+
+		return entity;
 	}
 
 	void Scene::AddCollisionBox(BoundingBox* box, UUID* uuid)
@@ -116,18 +132,32 @@ namespace Engine {
 	//	m_CollisionBoxes.insert(m_CollisionBoxes.end(), boxes.begin(), boxes.end());
 	//}
 
-	Entity* Scene::GetEntity(UUID uuid)
+	Entity Scene::GetEntity(UUID uuid)
 	{
-		if (m_Entities.contains(uuid))
-			return m_Entities[uuid];
+		if (m_Entities.find(uuid) != m_Entities.end())
+			return { m_Entities.at(uuid), this };
 		else
 			EG_CORE_ERROR("Cannot find entity named: {0}", uuid.ID);
-		return nullptr;
+		return {};
+	}
+
+	Entity Scene::GetEntity(std::string name)
+	{
+		auto view = m_Registry.view<MetaDataComponent>();
+		for (auto entity : view)
+		{
+			const MetaDataComponent& MDC = view.get<MetaDataComponent>(entity);
+			if (MDC.name == name)
+			{
+				return Entity{ entity, this };
+			}
+		}
+		return {};
 	}
 
 	bool Scene::RemoveEntity(UUID uuid)
 	{
-		m_Entities[uuid]->needsDelete = true;
+		m_Entities.erase(uuid);
 		return true;
 	}
 

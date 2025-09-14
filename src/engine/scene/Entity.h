@@ -1,42 +1,57 @@
 #pragma once
 
 #include "Components.h"
-#include "BoundingBox.h"
 #include "UUID.h"
+#include "Scene.h"
 
-#include "engine/core/Timestep.h"
+#include <entt/entt.hpp>
 
 namespace Engine {
-
-	class Scene;
 
 	class Entity
 	{
 	public:
-		Entity(std::string name, Scene* scene);
+		Entity() = default;
+		Entity(entt::entity handler, Scene* scene);
 
-		virtual void OnUpdate(Timestep ts);
-		virtual void OnRender();
-		TransformComponent* GetTransform();
-		SpriteRendererComponent* GetSpriteRenderer();
-		VelocityComponent* GetVelocity();
-		void Move(glm::vec2 dir, int acceleration, int maxSpeed, Engine::Timestep ts);
+		template<typename T, typename... Args>
+		T& AddComponent(Args&&... args)
+		{
+			EG_CORE_ASSERT(!HasComponent<T>(), "Entity has component");
+			T& component = m_Scene->m_Registry.emplace<T>(m_EntityHandler, std::forward<Args>(args)...);
+			//m_Scene->OnComponentAdded();
+			return component;
+		}
 
-		BoundingBox GetBoundingBox(glm::vec2 pos);
-		std::unordered_map<Components, Component*>* GetComponents() { return &m_Components; }
-	public:
-		std::string name;
-		bool hide = false;
+		template<typename T>
+		T& GetComponent()
+		{
+			EG_CORE_ASSERT(HasComponent<T>(), "Entity doesn't have component");
+			return m_Scene->m_Registry.get<T>(m_EntityHandler);
+		}
 
-		bool active = true;
+		template<typename T>
+		bool HasComponent()
+		{
+			return m_Scene->m_Registry.any_of<T>(m_EntityHandler);
+		}
 
-		bool needsDelete = false;
+		template<typename T>
+		void RemoveComponent()
+		{
+			EG_CORE_ASSERT(HasComponent<T>(), "Entity doesn't have component");
+			m_Scene->m_Registry.remove<T>(m_EntityHandler);
+		}
 
-		UUID EntityUUID = UUID(0);
-	protected:
-		std::unordered_map<Components, Component*> m_Components;
-		Scene* m_Scene;
-		BoundingBox m_BoundingBox;
+		operator bool() const { return m_EntityHandler != entt::null; }
+		operator entt::entity() const { return m_EntityHandler; }
+		operator uint32_t() const { return (uint32_t)m_EntityHandler; }
+
+		UUID getUUID() { return GetComponent<MetaDataComponent>().uuid; }
+		std::string getName() { return GetComponent<MetaDataComponent>().name; }
+	private:
+		entt::entity m_EntityHandler{ entt::null };
+		Scene* m_Scene = nullptr;
 	};
 }
 
