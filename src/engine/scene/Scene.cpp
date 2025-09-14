@@ -7,14 +7,14 @@
 namespace Engine {
 	void Scene::UpdateScene(Timestep ts)
 	{
-		//for (auto it = m_Entities.begin(); it != m_Entities.end();) {
-		//	if (it->second->active)
-		//		it->second->OnUpdate(ts);
-		//	if (it->second->needsDelete)
-		//		m_Entities.erase(it++);
-		//	else
-		//		++it;
-		//}
+		auto view = m_Registry.view<VelocityComponent>();
+		for (auto entity : view)
+		{
+			VelocityComponent& VC = view.get<VelocityComponent>(entity);
+			Entity{entity, this}.GetComponent<TransformComponent>().rotation += VC.rotationVelocity * ts.GetSeconds();
+			Entity{entity, this}.GetComponent<TransformComponent>().scale += VC.scaleVelocity * ts.GetSeconds();
+			Entity{ entity, this }.GetComponent<TransformComponent>().position += VC.velocity * ts.GetSeconds();
+		}
 	}
 
 	/**
@@ -70,22 +70,18 @@ namespace Engine {
 	void Scene::RenderScene(Camera* camera)
 	{
 		Renderer2D::BeginScene(camera);
-		for (auto it = m_Entities.begin(); it != m_Entities.end(); it++)
+
+		auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+		for (auto entity : group)
 		{
-			if (Entity{ it->second, this }.GetComponent<MetaDataComponent>().hide)
+			if (Entity{ entity, this }.GetComponent<MetaDataComponent>().hide)
 				continue;
 
-			{
-				auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-				for (auto entity : group)
-				{
-					auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-					if (sprite.texture)
-						Renderer2D::DrawQuad(transform.position, transform.scale, transform.rotation, sprite.texture, sprite.colour, sprite.tilingFactor);
-					else
-						Renderer2D::DrawQuad(transform.position, transform.scale, transform.rotation, sprite.colour);
-				}
-			}
+			auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+			if (sprite.texture)
+				Renderer2D::DrawQuad(transform.position, transform.scale, transform.rotation, sprite.texture, sprite.colour, sprite.tilingFactor);
+			else
+				Renderer2D::DrawQuad(transform.position, transform.scale, transform.rotation, sprite.colour);
 		}
 
 		// Render walls
@@ -155,9 +151,10 @@ namespace Engine {
 		return {};
 	}
 
-	bool Scene::RemoveEntity(UUID uuid)
+	bool Scene::RemoveEntity(Entity entity)
 	{
-		m_Entities.erase(uuid);
+		m_Entities.erase(entity.getUUID());
+		m_Registry.destroy(entity);
 		return true;
 	}
 
