@@ -8,7 +8,6 @@
 
 #include "engine/debug/AudioDebugger.h"
 #include "engine/debug/ImGuiRendererStats.h"
-#include "engine/debug/SceneDebugger.h"
 
 #include <GLFW/glfw3.h>
 

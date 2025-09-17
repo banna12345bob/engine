@@ -15,7 +15,7 @@ namespace Engine {
 	public:
 		Scene() = default;
 
-		void UpdateScene(Timestep ts);
+		virtual void UpdateScene(Timestep ts);
 		void RenderScene(Camera* camera);
 		Entity AddEntity(const std::string& name);
 		Entity AddEntityWithUUID(UUID uuid, const std::string& name);
@@ -26,7 +26,7 @@ namespace Engine {
 		bool RemoveCollisionBox(UUID uuid);
 		//void AddCollisionBoxes(std::vector<BoundingBox> boxes);
 		bool CheckCollisions(BoundingBox box, glm::vec2 vel, glm::vec2& actualDisplacement);
-	private:
+	protected:
 		entt::registry m_Registry;
 
 		std::unordered_map<UUID, entt::entity> m_Entities;
