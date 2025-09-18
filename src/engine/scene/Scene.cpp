@@ -5,6 +5,15 @@
 #include "Entity.h"
 
 namespace Engine {
+	Scene::Scene()
+	{
+		StartPhysicsWorld();
+	}
+
+	Scene::~Scene()
+	{
+	}
+
 	void Scene::UpdateScene(Timestep ts)
 	{
 		auto view = m_Registry.view<VelocityComponent>();
@@ -156,6 +165,18 @@ namespace Engine {
 		m_Entities.erase(entity.getUUID());
 		m_Registry.destroy(entity);
 		return true;
+	}
+
+	void Scene::StartPhysicsWorld()
+	{
+		if (B2_IS_NON_NULL(m_Box2dWorldID))
+		{
+			b2DestroyWorld(m_Box2dWorldID);
+			m_Box2dWorldID = b2_nullWorldId;
+		}
+		b2WorldDef box2dWorldDef = b2DefaultWorldDef();
+
+		m_Box2dWorldID = b2CreateWorld(&box2dWorldDef);
 	}
 
 }

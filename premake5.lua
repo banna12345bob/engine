@@ -32,6 +32,7 @@ project "engine"
 		"%{IncludeDir.json}",
 		"%{IncludeDir.zipFile}",
 		"%{IncludeDir.entt}",
+		"%{IncludeDir.Box2D}",
 	}
 
 	links 
@@ -39,7 +40,8 @@ project "engine"
 		"SDL3",
 		"GLFW",
 		"glad",
-		"ImGui"
+		"ImGui",
+		"Box2D"
 	}
 
 	libdirs

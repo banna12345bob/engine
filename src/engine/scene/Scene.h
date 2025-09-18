@@ -6,6 +6,8 @@
 
 #include <entt/entt.hpp>
 
+#include <box2d/box2d.h>
+
 namespace Engine {
 
 	class Entity;
@@ -13,7 +15,8 @@ namespace Engine {
 	class Scene
 	{
 	public:
-		Scene() = default;
+		Scene();
+		~Scene();
 
 		virtual void UpdateScene(Timestep ts);
 		void RenderScene(Camera* camera);
@@ -22,12 +25,17 @@ namespace Engine {
 		Entity GetEntity(UUID uuid);
 		Entity GetEntity(std::string name);
 		bool RemoveEntity(Entity entity);
+
+		void StartPhysicsWorld();
+
 		void AddCollisionBox(BoundingBox* box, UUID* uuid = nullptr);
 		bool RemoveCollisionBox(UUID uuid);
 		//void AddCollisionBoxes(std::vector<BoundingBox> boxes);
 		bool CheckCollisions(BoundingBox box, glm::vec2 vel, glm::vec2& actualDisplacement);
 	protected:
 		entt::registry m_Registry;
+
+		b2WorldId m_Box2dWorldID = b2_nullWorldId;
 
 		std::unordered_map<UUID, entt::entity> m_Entities;
 		std::unordered_map<UUID, BoundingBox*> m_CollisionBoxes;
