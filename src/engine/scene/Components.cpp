@@ -6,20 +6,6 @@
 
 namespace Engine {
 
-	std::string ComponentToString(Components component)
-	{
-		switch (component) {
-		case Transform:
-			return std::string("Tranform");
-		case SpriteRenderer:
-			return std::string("SpriteRenderer");
-		case Velocity:
-			return std::string("Velocity");
-		default:
-			return std::string("Error converting component to string");
-		}
-	}
-
 	void TransformComponent::ImGuiRender() 
 	{
 		float tempPos[3] = { position.x, position.y, position.z };

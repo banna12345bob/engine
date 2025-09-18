@@ -31,6 +31,7 @@ project "engine"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.json}",
 		"%{IncludeDir.zipFile}",
+		"%{IncludeDir.entt}",
 	}
 
 	links 

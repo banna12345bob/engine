@@ -1,29 +1,38 @@
 #pragma once
 
-#include "Entity.h"
 #include "engine/renderer/camera/Camera.h"
+#include "engine/core/Timestep.h"
+#include "engine/scene/BoundingBox.h"
+
+#include <entt/entt.hpp>
 
 namespace Engine {
+
+	class Entity;
 
 	class Scene
 	{
 	public:
 		Scene() = default;
 
-		void UpdateScene(Timestep ts);
+		virtual void UpdateScene(Timestep ts);
 		void RenderScene(Camera* camera);
-		void AddEntity(Entity* entity, UUID* uuid = nullptr);
-		Entity* GetEntity(UUID uuid);
-		bool RemoveEntity(UUID uuid);
+		Entity AddEntity(const std::string& name);
+		Entity AddEntityWithUUID(UUID uuid, const std::string& name);
+		Entity GetEntity(UUID uuid);
+		Entity GetEntity(std::string name);
+		bool RemoveEntity(Entity entity);
 		void AddCollisionBox(BoundingBox* box, UUID* uuid = nullptr);
 		bool RemoveCollisionBox(UUID uuid);
 		//void AddCollisionBoxes(std::vector<BoundingBox> boxes);
 		bool CheckCollisions(BoundingBox box, glm::vec2 vel, glm::vec2& actualDisplacement);
-	private:
-		std::unordered_map<UUID, Entity*> m_Entities;
+	protected:
+		entt::registry m_Registry;
+
+		std::unordered_map<UUID, entt::entity> m_Entities;
 		std::unordered_map<UUID, BoundingBox*> m_CollisionBoxes;
 
-		friend class SceneDebugger;
+		friend class Entity;
 	};
 }
 
