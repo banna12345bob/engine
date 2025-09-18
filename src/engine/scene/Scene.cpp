@@ -7,7 +7,6 @@
 namespace Engine {
 	Scene::Scene()
 	{
-		StartPhysicsWorld();
 	}
 
 	Scene::~Scene()
@@ -16,10 +15,26 @@ namespace Engine {
 
 	void Scene::UpdateScene(Timestep ts)
 	{
-		auto view = m_Registry.view<VelocityComponent>();
-		for (auto entity : view)
+		if (B2_IS_NULL(m_Box2dWorldID))
+			StartPhysicsWorld();
+
+		b2World_Step(m_Box2dWorldID, ts.GetMilliseconds(), 4);
+
+		auto view = m_Registry.view<RigidBody2DComponent>();
+		for (auto e : view)
 		{
-			VelocityComponent& VC = view.get<VelocityComponent>(entity);
+			Entity entity{ e, this };
+			TransformComponent& transform = entity.GetComponent<TransformComponent>();
+			RigidBody2DComponent& rb2d = entity.GetComponent<RigidBody2DComponent>();
+
+			transform.position = { b2Body_GetPosition(rb2d.Box2DBodyID).x, b2Body_GetPosition(rb2d.Box2DBodyID).y, transform.position.z };
+			transform.rotation = glm::acos(b2Body_GetRotation(rb2d.Box2DBodyID).c);
+		}
+
+		auto VelView = m_Registry.view<VelocityComponent>();
+		for (auto entity : VelView)
+		{
+			VelocityComponent& VC = VelView.get<VelocityComponent>(entity);
 			Entity{ entity, this }.GetComponent<TransformComponent>().rotation += VC.rotationVelocity * ts.GetSeconds();
 			Entity{ entity, this }.GetComponent<TransformComponent>().scale += VC.scaleVelocity * ts.GetSeconds();
 			Entity{ entity, this }.GetComponent<TransformComponent>().position += VC.velocity * ts.GetSeconds();
@@ -177,6 +192,24 @@ namespace Engine {
 		b2WorldDef box2dWorldDef = b2DefaultWorldDef();
 
 		m_Box2dWorldID = b2CreateWorld(&box2dWorldDef);
+
+		auto view = m_Registry.view<RigidBody2DComponent>();
+		for (auto e : view)
+		{
+			Entity entity{ e, this };
+			TransformComponent& transform = entity.GetComponent<TransformComponent>();
+			RigidBody2DComponent& rb2d = entity.GetComponent<RigidBody2DComponent>();
+
+			b2BodyDef bodyDef = b2DefaultBodyDef();
+			bodyDef.position.x = transform.position.x;
+			bodyDef.position.y = transform.position.y;
+
+			bodyDef.rotation.c = glm::cos(transform.rotation);
+			bodyDef.rotation.s = glm::sin(transform.rotation);
+			bodyDef.type = b2BodyType::b2_kinematicBody;
+
+			rb2d.Box2DBodyID = b2CreateBody(m_Box2dWorldID, &bodyDef);
+		}
 	}
 
 }

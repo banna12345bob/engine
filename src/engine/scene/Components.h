@@ -6,6 +6,8 @@
 
 #include <glm/glm.hpp>
 
+#include <box2d/box2d.h>
+
 namespace Engine {
 
 	struct MetaDataComponent {
@@ -59,5 +61,12 @@ namespace Engine {
 			: velocity(velocity) {}
 
 		void ImGuiRender();
+	};
+
+	struct RigidBody2DComponent {
+		b2BodyId Box2DBodyID = b2_nullBodyId;
+
+		RigidBody2DComponent() = default;
+		RigidBody2DComponent(const RigidBody2DComponent&) = default;
 	};
 }
