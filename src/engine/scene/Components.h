@@ -64,9 +64,24 @@ namespace Engine {
 	};
 
 	struct RigidBody2DComponent {
+		enum class BodyType { Static = 0, Dynamic, Kinematic };
 		b2BodyId Box2DBodyID = b2_nullBodyId;
+		BodyType Type = BodyType::Static;
+
+		bool FixedRotation = false;
 
 		RigidBody2DComponent() = default;
 		RigidBody2DComponent(const RigidBody2DComponent&) = default;
+	};
+
+	struct BoxCollider2DComponent {
+		glm::vec2 Offset = { 0.f, 0.f };
+		glm::vec2 Size = { .5f, .5f };
+
+		float Density = 1.f;
+		float Friction = .6f;
+
+		BoxCollider2DComponent() = default;
+		BoxCollider2DComponent(const BoxCollider2DComponent&) = default;
 	};
 }

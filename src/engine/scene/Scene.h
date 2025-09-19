@@ -27,18 +27,15 @@ namespace Engine {
 		bool RemoveEntity(Entity entity);
 
 		void StartPhysicsWorld();
-
-		void AddCollisionBox(BoundingBox* box, UUID* uuid = nullptr);
-		bool RemoveCollisionBox(UUID uuid);
-		//void AddCollisionBoxes(std::vector<BoundingBox> boxes);
-		bool CheckCollisions(BoundingBox box, glm::vec2 vel, glm::vec2& actualDisplacement);
+		void EndPhysicsWorld();
+	private:
+		void SetUpPhysicsEntity(Entity entity);
 	protected:
 		entt::registry m_Registry;
 
 		b2WorldId m_Box2dWorldID = b2_nullWorldId;
 
 		std::unordered_map<UUID, entt::entity> m_Entities;
-		std::unordered_map<UUID, BoundingBox*> m_CollisionBoxes;
 
 		friend class Entity;
 	};

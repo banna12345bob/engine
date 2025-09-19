@@ -14,8 +14,6 @@
 #include "engine/renderer/camera/OrthographicCameraController.h"
 #include "engine/renderer/camera/PerspecitveCameraController.h"
 
-#include "engine/utils/Vector2i.h"
-
 #include "engine/debug/Instrumentor.h"
 
 #include "engine/events/AllEvents.h"

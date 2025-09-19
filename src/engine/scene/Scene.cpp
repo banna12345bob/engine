@@ -3,6 +3,7 @@
 
 #include "engine/renderer/Renderer2D.h"
 #include "Entity.h"
+#include "engine/utils/Physcis2D.h"
 
 namespace Engine {
 	Scene::Scene()
@@ -11,6 +12,7 @@ namespace Engine {
 
 	Scene::~Scene()
 	{
+		EndPhysicsWorld();
 	}
 
 	void Scene::UpdateScene(Timestep ts)
@@ -18,7 +20,7 @@ namespace Engine {
 		if (B2_IS_NULL(m_Box2dWorldID))
 			StartPhysicsWorld();
 
-		b2World_Step(m_Box2dWorldID, ts.GetMilliseconds(), 4);
+		b2World_Step(m_Box2dWorldID, ts.GetSeconds(), 4);
 
 		auto view = m_Registry.view<RigidBody2DComponent>();
 		for (auto e : view)
@@ -27,8 +29,18 @@ namespace Engine {
 			TransformComponent& transform = entity.GetComponent<TransformComponent>();
 			RigidBody2DComponent& rb2d = entity.GetComponent<RigidBody2DComponent>();
 
+			if (B2_IS_NULL(rb2d.Box2DBodyID))
+			{
+				SetUpPhysicsEntity(entity);
+			}
+
+			if (rb2d.Type == RigidBody2DComponent::BodyType::Static)
+			{
+				b2Body_SetTransform(rb2d.Box2DBodyID, { transform.position.x, transform.position.y }, { glm::cos(glm::radians(transform.rotation)), glm::sin(glm::radians(transform.rotation)) });
+			}
+
 			transform.position = { b2Body_GetPosition(rb2d.Box2DBodyID).x, b2Body_GetPosition(rb2d.Box2DBodyID).y, transform.position.z };
-			transform.rotation = glm::acos(b2Body_GetRotation(rb2d.Box2DBodyID).c);
+			transform.rotation = glm::degrees(b2Rot_GetAngle(b2Body_GetRotation(rb2d.Box2DBodyID)));
 		}
 
 		auto VelView = m_Registry.view<VelocityComponent>();
@@ -39,56 +51,6 @@ namespace Engine {
 			Entity{ entity, this }.GetComponent<TransformComponent>().scale += VC.scaleVelocity * ts.GetSeconds();
 			Entity{ entity, this }.GetComponent<TransformComponent>().position += VC.velocity * ts.GetSeconds();
 		}
-	}
-
-	/**
-	* @param box: the current bounding box of the entity
-	* @param displacement: the velocity of the entity * timestep
-	* @param actualDisplacement: reference to the resulting displacement that the entity is able to move without overlapping walls
-	*/
-	bool Scene::CheckCollisions(BoundingBox box, glm::vec2 displacement, glm::vec2& actualDisplacement) {
-		BoundingBox newBox = box;
-		bool collide = false;
-		actualDisplacement = displacement;
-
-		// This is needed because we are working with floats which can be a little inaccurate
-		float padding = 0.000002f;
-
-		if (displacement.x != 0) {
-			newBox.x += displacement.x;
-			for (auto it = m_CollisionBoxes.begin(); it != m_CollisionBoxes.end(); it++) {
-				if (newBox.Intersect(*it->second)) {
-					if (displacement.x > 0) {
-						actualDisplacement.x = displacement.x - (newBox.right() - it->second->left()) - padding;
-					}
-					else {
-						actualDisplacement.x = displacement.x + (it->second->right() - newBox.left()) + padding;
-					}
-					collide = true;
-					break;
-				}
-			}
-
-			newBox.x = box.x;
-		}
-		
-		if (displacement.y != 0) {
-			newBox.y += displacement.y;
-			for (auto it = m_CollisionBoxes.begin(); it != m_CollisionBoxes.end(); it++) {
-				if (newBox.Intersect(*it->second)) {
-					if (displacement.y > 0) {
-						actualDisplacement.y = displacement.y - (newBox.top() - it->second->bottom()) - padding;
-					}
-					else {
-						actualDisplacement.y = displacement.y + (it->second->top() - newBox.bottom()) + padding;
-					}
-					collide = true;
-					break;
-				}
-			}
-		}
-
-		return collide;
 	}
 
 	void Scene::RenderScene(Camera* camera)
@@ -132,26 +94,6 @@ namespace Engine {
 		return entity;
 	}
 
-	void Scene::AddCollisionBox(BoundingBox* box, UUID* uuid)
-	{
-		UUID boxUUID = UUID::GenerateUUID();
-		if (uuid)
-		{
-			*uuid = boxUUID;
-		}
-		box->BoxUUID = boxUUID;
-		m_CollisionBoxes[boxUUID] = box;
-	}
-	bool Scene::RemoveCollisionBox(UUID uuid)
-	{
-		m_CollisionBoxes.erase(uuid);
-		return true;
-	}
-	//void Scene::AddCollisionBoxes(std::vector<BoundingBox> boxes)
-	//{
-	//	m_CollisionBoxes.insert(m_CollisionBoxes.end(), boxes.begin(), boxes.end());
-	//}
-
 	Entity Scene::GetEntity(UUID uuid)
 	{
 		if (m_Entities.find(uuid) != m_Entities.end())
@@ -186,10 +128,10 @@ namespace Engine {
 	{
 		if (B2_IS_NON_NULL(m_Box2dWorldID))
 		{
-			b2DestroyWorld(m_Box2dWorldID);
-			m_Box2dWorldID = b2_nullWorldId;
+			EndPhysicsWorld();
 		}
 		b2WorldDef box2dWorldDef = b2DefaultWorldDef();
+		box2dWorldDef.gravity = { 0, -9.8f };
 
 		m_Box2dWorldID = b2CreateWorld(&box2dWorldDef);
 
@@ -197,19 +139,58 @@ namespace Engine {
 		for (auto e : view)
 		{
 			Entity entity{ e, this };
-			TransformComponent& transform = entity.GetComponent<TransformComponent>();
-			RigidBody2DComponent& rb2d = entity.GetComponent<RigidBody2DComponent>();
-
-			b2BodyDef bodyDef = b2DefaultBodyDef();
-			bodyDef.position.x = transform.position.x;
-			bodyDef.position.y = transform.position.y;
-
-			bodyDef.rotation.c = glm::cos(transform.rotation);
-			bodyDef.rotation.s = glm::sin(transform.rotation);
-			bodyDef.type = b2BodyType::b2_kinematicBody;
-
-			rb2d.Box2DBodyID = b2CreateBody(m_Box2dWorldID, &bodyDef);
+			SetUpPhysicsEntity(entity);
 		}
+
+		EG_CORE_INFO("Started physics world!");
+	}
+
+	void Scene::SetUpPhysicsEntity(Entity entity)
+	{
+		TransformComponent& transform = entity.GetComponent<TransformComponent>();
+		RigidBody2DComponent& rb2d = entity.GetComponent<RigidBody2DComponent>();
+
+		if (B2_IS_NON_NULL(rb2d.Box2DBodyID))
+		{
+			b2DestroyBody(rb2d.Box2DBodyID);
+			rb2d.Box2DBodyID = b2_nullBodyId;
+		}
+
+		b2BodyDef bodyDef = b2DefaultBodyDef();
+		bodyDef.position = { transform.position.x, transform.position.y };
+		bodyDef.rotation = { glm::cos(glm::radians(transform.rotation)), glm::sin(glm::radians(transform.rotation)) };
+
+		bodyDef.type = Utils::RigidBodyTypeToBox2DType(rb2d.Type);
+		bodyDef.motionLocks.angularZ = rb2d.FixedRotation;
+
+		rb2d.Box2DBodyID = b2CreateBody(m_Box2dWorldID, &bodyDef);
+
+		if (entity.HasComponent<BoxCollider2DComponent>())
+		{
+			BoxCollider2DComponent& bc2d = entity.GetComponent<BoxCollider2DComponent>();
+
+			b2ShapeDef shapeDef = b2DefaultShapeDef();
+			shapeDef.density = bc2d.Density;
+			shapeDef.material.friction = bc2d.Friction;
+
+			b2Polygon polygon = b2MakeOffsetBox(transform.scale.x * bc2d.Size.x, transform.scale.y * bc2d.Size.y, { bc2d.Offset.x, bc2d.Offset.y }, b2Rot_identity);
+			b2CreatePolygonShape(rb2d.Box2DBodyID, &shapeDef, &polygon);
+		}
+
+	}
+
+	void Scene::EndPhysicsWorld()
+	{
+		auto view = m_Registry.view<RigidBody2DComponent>();
+		for (auto entity : view)
+		{
+			RigidBody2DComponent& rb2d = view.get<RigidBody2DComponent>(entity);
+			b2DestroyBody(rb2d.Box2DBodyID);
+			rb2d.Box2DBodyID = b2_nullBodyId;
+		}
+
+		b2DestroyWorld(m_Box2dWorldID);
+		m_Box2dWorldID = b2_nullWorldId;
 	}
 
 }

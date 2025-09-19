@@ -3,6 +3,10 @@
 namespace Engine {
 #ifdef EG_GLFW_WINDOW
     //From glfw3.h
+    #define EG_MOUSECODE_LEFT 0
+    #define EG_MOUSECODE_MIDDLE 2
+    #define EG_MOUSECODE_RIGHT 1
+
     #define EG_KEY_SPACE              32
     #define EG_KEY_APOSTROPHE         39  /* ' */
     #define EG_KEY_COMMA              44  /* , */
@@ -126,6 +130,10 @@ namespace Engine {
     #define EG_KEY_RIGHT_EGPER        347
     #define EG_KEY_MENU               348
 #else
+    #define EG_MOUSECODE_LEFT 1
+    #define EG_MOUSECODE_MIDDLE 2
+    #define EG_MOUSECODE_RIGHT 3
+
     #define EG_KEY_UNKNOWN 0
     #define EG_KEY_A 4
     #define EG_KEY_B 5
