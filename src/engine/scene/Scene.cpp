@@ -33,12 +33,6 @@ namespace Engine {
 			{
 				SetUpPhysicsEntity(entity);
 			}
-
-			if (rb2d.Type == RigidBody2DComponent::BodyType::Static)
-			{
-				b2Body_SetTransform(rb2d.Box2DBodyID, { transform.position.x, transform.position.y }, { glm::cos(glm::radians(transform.rotation)), glm::sin(glm::radians(transform.rotation)) });
-			}
-
 			transform.position = { b2Body_GetPosition(rb2d.Box2DBodyID).x, b2Body_GetPosition(rb2d.Box2DBodyID).y, transform.position.z };
 			transform.rotation = glm::degrees(b2Rot_GetAngle(b2Body_GetRotation(rb2d.Box2DBodyID)));
 		}
