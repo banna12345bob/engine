@@ -4,6 +4,7 @@
 #include "engine/renderer/Renderer2D.h"
 #include "Entity.h"
 #include "engine/utils/Physcis2D.h"
+#include "ScriptableEntity.h"
 
 namespace Engine {
 	Scene::Scene()
@@ -17,6 +18,22 @@ namespace Engine {
 
 	void Scene::UpdateScene(Timestep ts)
 	{
+		auto NativeScriptView = m_Registry.view<NativeScriptComponent>();
+		for (auto e : NativeScriptView)
+		{
+			Entity entity{ e, this };
+			NativeScriptComponent& NSC = entity.GetComponent<NativeScriptComponent>();
+
+			if (!NSC.Instance)
+			{
+				NSC.InstantiateFunction();
+				NSC.Instance->m_Entity = entity;
+				NSC.OnCreateFunction(NSC.Instance);
+			}
+
+			NSC.OnUpdateFunction(NSC.Instance, ts);
+		}
+
 		if (B2_IS_NULL(m_Box2dWorldID))
 			StartPhysicsWorld();
 
@@ -40,6 +57,7 @@ namespace Engine {
 		auto VelView = m_Registry.view<VelocityComponent>();
 		for (auto entity : VelView)
 		{
+			EG_CORE_WARN("Velocity Component Depricated. Please use RigidBody2DComponent");
 			VelocityComponent& VC = VelView.get<VelocityComponent>(entity);
 			Entity{ entity, this }.GetComponent<TransformComponent>().rotation += VC.rotationVelocity * ts.GetSeconds();
 			Entity{ entity, this }.GetComponent<TransformComponent>().scale += VC.scaleVelocity * ts.GetSeconds();

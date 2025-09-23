@@ -4,6 +4,8 @@
 #include "engine/renderer/Texture.h"
 #include "engine/scene/UUID.h"
 
+#include "engine/core/Timestep.h"
+
 #include <glm/glm.hpp>
 
 #include <box2d/box2d.h>
@@ -30,8 +32,6 @@ namespace Engine {
 		TransformComponent(const TransformComponent&) = default;
 		TransformComponent(const glm::vec3 position)
 			: position(position) {}
-
-		void ImGuiRender();
 	};
 
 	struct SpriteRendererComponent {
@@ -44,10 +44,31 @@ namespace Engine {
 		SpriteRendererComponent(const glm::vec4& colour)
 			: colour(colour) {}
 
-		void ImGuiRender();
-
 	private:
 		std::string filepath;
+	};
+
+	class ScriptableEntity;
+
+	struct NativeScriptComponent {
+		ScriptableEntity* Instance = nullptr;
+
+		std::function<void()> InstantiateFunction;
+		std::function<void()> DestroyInstanceFunction;
+		std::function<void(ScriptableEntity*)> OnCreateFunction;
+		std::function<void(ScriptableEntity*)> OnDestroyFunction;
+		std::function<void(ScriptableEntity*, Timestep)> OnUpdateFunction;
+
+		template<typename T>
+		void Bind()
+		{
+			InstantiateFunction = [&]() { Instance = new T(); };
+			DestroyInstanceFunction = [&]() { delete (T*)Instance; Instance = nullptr; };
+
+			OnCreateFunction = [](ScriptableEntity* instance) { ((T*)instance)->OnCreate(); };
+			OnDestroyFunction = [](ScriptableEntity* instance) { ((T*)instance)->OnDestroy(); };
+			OnUpdateFunction = [](ScriptableEntity* instance, Timestep ts) { ((T*)instance)->OnUpdate(ts); };
+		}
 	};
 
 	struct VelocityComponent {
@@ -59,8 +80,6 @@ namespace Engine {
 		VelocityComponent(const VelocityComponent&) = default;
 		VelocityComponent(const glm::vec3 velocity)
 			: velocity(velocity) {}
-
-		void ImGuiRender();
 	};
 
 	struct RigidBody2DComponent {

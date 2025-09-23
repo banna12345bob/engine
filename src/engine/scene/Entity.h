@@ -13,6 +13,7 @@ namespace Engine {
 	public:
 		Entity() = default;
 		Entity(entt::entity handler, Scene* scene);
+		Entity(const Entity& other) = default;
 
 		template<typename T, typename... Args>
 		T& AddComponent(Args&&... args)
@@ -52,6 +53,7 @@ namespace Engine {
 	private:
 		entt::entity m_EntityHandler{ entt::null };
 		Scene* m_Scene = nullptr;
+		friend class ScriptableEntity;
 	};
 }
 
