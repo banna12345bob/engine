@@ -26,12 +26,12 @@ namespace Engine {
 
 			if (!NSC.Instance)
 			{
-				NSC.InstantiateFunction();
+				NSC.Instance = NSC.InstantiateScriptFunction();
 				NSC.Instance->m_Entity = entity;
-				NSC.OnCreateFunction(NSC.Instance);
+				NSC.Instance->OnCreate();
 			}
 
-			NSC.OnUpdateFunction(NSC.Instance, ts);
+			NSC.Instance->OnUpdate(ts);
 		}
 
 		if (B2_IS_NULL(m_Box2dWorldID))
@@ -52,16 +52,6 @@ namespace Engine {
 			}
 			transform.position = { b2Body_GetPosition(rb2d.Box2DBodyID).x, b2Body_GetPosition(rb2d.Box2DBodyID).y, transform.position.z };
 			transform.rotation = glm::degrees(b2Rot_GetAngle(b2Body_GetRotation(rb2d.Box2DBodyID)));
-		}
-
-		auto VelView = m_Registry.view<VelocityComponent>();
-		for (auto entity : VelView)
-		{
-			EG_CORE_WARN("Velocity Component Depricated. Please use RigidBody2DComponent");
-			VelocityComponent& VC = VelView.get<VelocityComponent>(entity);
-			Entity{ entity, this }.GetComponent<TransformComponent>().rotation += VC.rotationVelocity * ts.GetSeconds();
-			Entity{ entity, this }.GetComponent<TransformComponent>().scale += VC.scaleVelocity * ts.GetSeconds();
-			Entity{ entity, this }.GetComponent<TransformComponent>().position += VC.velocity * ts.GetSeconds();
 		}
 	}
 
