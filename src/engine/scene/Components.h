@@ -3,6 +3,7 @@
 
 #include "engine/renderer/Texture.h"
 #include "engine/scene/UUID.h"
+#include "engine/renderer/camera/OrthographicCamera.h"
 
 #include "engine/core/Timestep.h"
 
@@ -46,6 +47,13 @@ namespace Engine {
 
 	private:
 		std::string filepath;
+	};
+
+	struct OrthographicCameraComponent {
+		OrthographicCamera* camera;
+
+		OrthographicCameraComponent() = default;
+		OrthographicCameraComponent(const OrthographicCameraComponent&) = default;
 	};
 
 	class ScriptableEntity;

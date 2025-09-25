@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <glm/glm.hpp>
 
@@ -6,7 +6,7 @@
 
 #include "engine/core/core.h"
 #include "engine/renderer/Texture.h"
-#include "engine/renderer/camera/Camera.h"
+#include "engine/renderer/camera/OrthographicCamera.h"
 
 namespace Engine {
 
@@ -16,7 +16,10 @@ namespace Engine {
 		static void Init();
 		static void Shutdown();
 
-		static void BeginScene(Camera* camera);
+		// For some reason when I set this to Camera* instead of OrthographicCamera* it lags for two seconds on the first frame
+		// Doesn't happen in debug though
+		// ¯\_(ツ)_/¯
+		static void BeginScene(OrthographicCamera* camera);
 		static void EndScene();
 
 		static void Flush();

@@ -10,6 +10,10 @@
 #include "engine/renderer/Shader.h"
 #include "engine/renderer/RenderCommand.h"
 
+#include "engine/debug/Instrumentor.h"
+
+#include "engine/renderer/camera/OrthographicCamera.h"
+
 namespace Engine {
 
 	struct SquareVertex
@@ -45,7 +49,7 @@ namespace Engine {
 
 		ShaderLibary shaderLibrary;
 
-		Camera* orthoGraphicCamera = nullptr;
+		OrthographicCamera* orthoGraphicCamera = nullptr;
 
 		Renderer2D::Statistics Stats;
 	};
@@ -113,8 +117,9 @@ namespace Engine {
 		delete[] s_Data.squareVertexBufferBase;
 	}
 
-	void Renderer2D::BeginScene(Camera* camera)
+	void Renderer2D::BeginScene(OrthographicCamera* camera)
 	{
+		EG_PROFILE_FUNCTION();
 		s_Data.orthoGraphicCamera = camera;
 		s_Data.TextureShader->Bind();
 		s_Data.TextureShader->SetMat4("u_ViewProjection", s_Data.orthoGraphicCamera->GetViewProjectionMatrix());
@@ -127,6 +132,7 @@ namespace Engine {
 
 	void Renderer2D::EndScene()
 	{
+		EG_PROFILE_FUNCTION();
 		uint32_t dataSize = (uint32_t)((uint8_t*)s_Data.squareVertexBufferPtr - (uint8_t*)s_Data.squareVertexBufferBase);
 		s_Data.QuadVertexBuffer->SetData(s_Data.squareVertexBufferBase, dataSize);
 
@@ -135,6 +141,7 @@ namespace Engine {
 
 	void Renderer2D::Flush()
 	{
+		EG_PROFILE_FUNCTION();
 		if (s_Data.squareIndexCount == 0)
 			return; // Nothing to draw
 
@@ -163,6 +170,7 @@ namespace Engine {
 
 	void Renderer2D::DrawQuad(glm::vec3 position, glm::vec2 scale, float rotation, glm::vec4 colour)
 	{
+		EG_PROFILE_FUNCTION();
 		if (s_Data.squareIndexCount >= Renderer2DData::maxIndices)
 			FlushAndReset();
 
@@ -198,6 +206,7 @@ namespace Engine {
 
 	void Renderer2D::DrawQuad(glm::vec3 position, glm::vec2 scale, float rotation, Ref<Texture2D>& texture, glm::vec4 tintColour, float tilingFactor)
 	{
+		EG_PROFILE_FUNCTION();
 		if (s_Data.squareIndexCount >= Renderer2DData::maxIndices)
 			FlushAndReset();
 

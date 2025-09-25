@@ -19,7 +19,7 @@ namespace Engine {
 		~Scene();
 
 		virtual void UpdateScene(Timestep ts);
-		void RenderScene(Camera* camera);
+		void RenderScene();
 		Entity AddEntity(const std::string& name);
 		Entity AddEntityWithUUID(UUID uuid, const std::string& name);
 		Entity GetEntity(UUID uuid);
@@ -28,6 +28,8 @@ namespace Engine {
 
 		void StartPhysicsWorld();
 		void EndPhysicsWorld();
+
+		void SetPrimaryCamera(Entity cameraEntity);
 	private:
 		void SetUpPhysicsEntity(Entity entity);
 	protected:
@@ -36,6 +38,8 @@ namespace Engine {
 		b2WorldId m_Box2dWorldID = b2_nullWorldId;
 
 		std::unordered_map<UUID, entt::entity> m_Entities;
+
+		entt::entity m_PrimaryCamera;
 
 		friend class Entity;
 	};

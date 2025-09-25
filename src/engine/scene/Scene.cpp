@@ -6,6 +6,8 @@
 #include "engine/utils/Physcis2D.h"
 #include "ScriptableEntity.h"
 
+#include "engine/debug/Instrumentor.h"
+
 namespace Engine {
 	Scene::Scene()
 	{
@@ -18,6 +20,7 @@ namespace Engine {
 
 	void Scene::UpdateScene(Timestep ts)
 	{
+		EG_PROFILE_FUNCTION();
 		auto NativeScriptView = m_Registry.view<NativeScriptComponent>();
 		for (auto e : NativeScriptView)
 		{
@@ -55,10 +58,10 @@ namespace Engine {
 		}
 	}
 
-	void Scene::RenderScene(Camera* camera)
+	void Scene::RenderScene()
 	{
-		Renderer2D::BeginScene(camera);
-
+		EG_PROFILE_FUNCTION();
+		Renderer2D::BeginScene(Entity{m_PrimaryCamera, this}.GetComponent<OrthographicCameraComponent>().camera);
 		auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 		for (auto entity : group)
 		{
@@ -72,11 +75,6 @@ namespace Engine {
 				Renderer2D::DrawQuad(transform.position, transform.scale, transform.rotation, sprite.colour);
 		}
 
-		// Render walls
-		//for (auto it = m_CollisionBoxes.begin(); it != m_CollisionBoxes.end(); it++) {
-		//	Renderer2D::DrawQuad(glm::vec3(it->x + it->width / 2, it->y + it->height / 2, 0), it->size(), 0.f, glm::vec4(1, 1, 0, 1));
-		//}
-
 		Renderer2D::EndScene();
 	}
 
@@ -87,6 +85,7 @@ namespace Engine {
 
 	Entity Scene::AddEntityWithUUID(UUID uuid, const std::string& name)
 	{
+		EG_PROFILE_FUNCTION();
 		Entity entity = { m_Registry.create(), this };
 		entity.AddComponent<MetaDataComponent>(uuid, name, false);
 		entity.AddComponent<TransformComponent>();
@@ -98,6 +97,7 @@ namespace Engine {
 
 	Entity Scene::GetEntity(UUID uuid)
 	{
+		EG_PROFILE_FUNCTION();
 		if (m_Entities.find(uuid) != m_Entities.end())
 			return { m_Entities.at(uuid), this };
 		else
@@ -107,6 +107,7 @@ namespace Engine {
 
 	Entity Scene::GetEntity(std::string name)
 	{
+		EG_PROFILE_FUNCTION();
 		auto view = m_Registry.view<MetaDataComponent>();
 		for (auto entity : view)
 		{
@@ -128,6 +129,7 @@ namespace Engine {
 
 	void Scene::StartPhysicsWorld()
 	{
+		EG_PROFILE_FUNCTION();
 		if (B2_IS_NON_NULL(m_Box2dWorldID))
 		{
 			EndPhysicsWorld();
@@ -149,6 +151,7 @@ namespace Engine {
 
 	void Scene::SetUpPhysicsEntity(Entity entity)
 	{
+		EG_PROFILE_FUNCTION();
 		TransformComponent& transform = entity.GetComponent<TransformComponent>();
 		RigidBody2DComponent& rb2d = entity.GetComponent<RigidBody2DComponent>();
 
@@ -183,6 +186,7 @@ namespace Engine {
 
 	void Scene::EndPhysicsWorld()
 	{
+		EG_PROFILE_FUNCTION();
 		auto view = m_Registry.view<RigidBody2DComponent>();
 		for (auto entity : view)
 		{
@@ -193,6 +197,12 @@ namespace Engine {
 
 		b2DestroyWorld(m_Box2dWorldID);
 		m_Box2dWorldID = b2_nullWorldId;
+	}
+
+	void Scene::SetPrimaryCamera(Entity cameraEntity)
+	{
+		EG_PROFILE_FUNCTION();
+		m_PrimaryCamera = cameraEntity;
 	}
 
 }
