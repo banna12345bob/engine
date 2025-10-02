@@ -135,7 +135,7 @@ namespace Engine {
 			EndPhysicsWorld();
 		}
 		b2WorldDef box2dWorldDef = b2DefaultWorldDef();
-		box2dWorldDef.gravity = { 0, -9.8f };
+		box2dWorldDef.gravity = { 0, 0 };
 
 		m_Box2dWorldID = b2CreateWorld(&box2dWorldDef);
 
