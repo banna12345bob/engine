@@ -10,7 +10,10 @@
 
 namespace Engine {
 	Scene::Scene()
+		: m_PrimaryCamera(0)
 	{
+		AddEntityWithUUID(UUID(0), "ROOT");
+		GetEntity(UUID(0)).GetComponent<MetaDataComponent>().hide = true;
 	}
 
 	Scene::~Scene()
@@ -37,6 +40,14 @@ namespace Engine {
 			NSC.Instance->OnUpdate(ts);
 		}
 
+		for (auto it = m_Entities.begin(); it != m_Entities.end(); it++)
+		{
+			Entity entity{ it->second, this };
+
+			// TODO: Figure out how to do local transformations
+			//entity.GetComponent<TransformComponent>().position = GetEntity(entity.GetComponent<MetaDataComponent>().parent).GetComponent<TransformComponent>().position;
+		}
+
 		if (B2_IS_NULL(m_Box2dWorldID))
 			StartPhysicsWorld();
 
@@ -61,7 +72,8 @@ namespace Engine {
 	void Scene::RenderScene()
 	{
 		EG_PROFILE_FUNCTION();
-		Renderer2D::BeginScene(Entity{m_PrimaryCamera, this}.GetComponent<OrthographicCameraComponent>().camera);
+		EG_ASSERT(m_PrimaryCamera != 0, "Haven't set scene camera");
+		Renderer2D::BeginScene(GetEntity(m_PrimaryCamera).GetComponent<OrthographicCameraComponent>().camera);
 		auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 		for (auto entity : group)
 		{
@@ -101,7 +113,7 @@ namespace Engine {
 		if (m_Entities.find(uuid) != m_Entities.end())
 			return { m_Entities.at(uuid), this };
 		else
-			EG_CORE_ERROR("Cannot find entity named: {0}", uuid.ID);
+			EG_CORE_ERROR("Cannot find entity with uuid: {0}", uuid.ID);
 		return {};
 	}
 
@@ -117,6 +129,7 @@ namespace Engine {
 				return Entity{ entity, this };
 			}
 		}
+		EG_CORE_ERROR("Cannot find entity with name: {0}", name);
 		return {};
 	}
 
@@ -202,7 +215,54 @@ namespace Engine {
 	void Scene::SetPrimaryCamera(Entity cameraEntity)
 	{
 		EG_PROFILE_FUNCTION();
-		m_PrimaryCamera = cameraEntity;
+		m_PrimaryCamera = cameraEntity.getUUID();
+	}
+
+	template<typename T>
+	void Scene::OnComponentAdded(Entity Entity, T& component)
+	{
+		static_assert(sizeof(T) == 0);
+	}
+
+	template<>
+	void Scene::OnComponentAdded<MetaDataComponent>(Entity Entity, MetaDataComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::OnComponentAdded<TransformComponent>(Entity Entity, TransformComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::OnComponentAdded<SpriteRendererComponent>(Entity Entity, SpriteRendererComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::OnComponentAdded<OrthographicCameraComponent>(Entity Entity, OrthographicCameraComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::OnComponentAdded<NativeScriptComponent>(Entity Entity, NativeScriptComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::OnComponentAdded<RigidBody2DComponent>(Entity Entity, RigidBody2DComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::OnComponentAdded<BoxCollider2DComponent>(Entity Entity, BoxCollider2DComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::OnComponentAdded<VelocityComponent>(Entity Entity, VelocityComponent& component)
+	{
+		EG_CORE_FATAL("VelocityComponent: Very extreamly depricated");
 	}
 
 }

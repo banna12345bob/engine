@@ -17,11 +17,12 @@ namespace Engine {
 		UUID uuid;
 		std::string name;
 		bool hide;
+		UUID parent;
 
 		MetaDataComponent() = default;
 		MetaDataComponent(const MetaDataComponent&) = default;
 		MetaDataComponent(const UUID& uuid, const std::string& name, const bool& hide) 
-			: uuid(uuid), name(name), hide(hide) {}
+			: uuid(uuid), name(name), hide(hide), parent(0) {}
 	};
 
 	struct TransformComponent {
@@ -76,9 +77,9 @@ namespace Engine {
 	};
 
 	struct VelocityComponent {
-		glm::vec3 velocity = glm::vec3(0.f);
-		float rotationVelocity = 0.f;
-		glm::vec2 scaleVelocity = glm::vec2(0.f);
+		glm::vec3 velocity;
+		float rotationVelocity;
+		glm::vec2 scaleVelocity;
 
 		VelocityComponent() = default;
 		VelocityComponent(const VelocityComponent&) = default;

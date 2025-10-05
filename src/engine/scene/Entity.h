@@ -20,7 +20,7 @@ namespace Engine {
 		{
 			EG_CORE_ASSERT(!HasComponent<T>(), "Entity has component");
 			T& component = m_Scene->m_Registry.emplace<T>(m_EntityHandler, std::forward<Args>(args)...);
-			//m_Scene->OnComponentAdded();
+			m_Scene->OnComponentAdded<T>(*this, component);
 			return component;
 		}
 

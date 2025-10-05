@@ -32,6 +32,9 @@ namespace Engine {
 		void SetPrimaryCamera(Entity cameraEntity);
 	private:
 		void SetUpPhysicsEntity(Entity entity);
+
+		template<typename T>
+		void OnComponentAdded(Entity Entity, T& component);
 	protected:
 		entt::registry m_Registry;
 
@@ -39,7 +42,7 @@ namespace Engine {
 
 		std::unordered_map<UUID, entt::entity> m_Entities;
 
-		entt::entity m_PrimaryCamera;
+		UUID m_PrimaryCamera;
 
 		friend class Entity;
 	};
