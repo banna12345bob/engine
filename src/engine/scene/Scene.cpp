@@ -12,8 +12,9 @@ namespace Engine {
 	Scene::Scene()
 		: m_PrimaryCamera(0)
 	{
-		AddEntityWithUUID(UUID(0), "ROOT");
+		AddEntityWithUUID(UUID(0), "ROOT", false);
 		GetEntity(UUID(0)).GetComponent<MetaDataComponent>().hide = true;
+		GetEntity(UUID(0)).GetComponent<MetaDataComponent>().parent = UUID(-1);
 	}
 
 	Scene::~Scene()
@@ -95,7 +96,7 @@ namespace Engine {
 		return AddEntityWithUUID(UUID::GenerateUUID(), name);
 	}
 
-	Entity Scene::AddEntityWithUUID(UUID uuid, const std::string& name)
+	Entity Scene::AddEntityWithUUID(UUID uuid, const std::string& name, bool isChildOfRoot)
 	{
 		EG_PROFILE_FUNCTION();
 		Entity entity = { m_Registry.create(), this };
@@ -103,6 +104,9 @@ namespace Engine {
 		entity.AddComponent<TransformComponent>();
 
 		m_Entities[uuid] = entity;
+
+		if (isChildOfRoot)
+			GetEntity(UUID(0)).addChild(entity);
 
 		return entity;
 	}

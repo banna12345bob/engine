@@ -18,6 +18,7 @@ namespace Engine {
 		std::string name;
 		bool hide;
 		UUID parent;
+		std::vector<UUID> children;
 
 		MetaDataComponent() = default;
 		MetaDataComponent(const MetaDataComponent&) = default;

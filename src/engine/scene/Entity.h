@@ -50,6 +50,26 @@ namespace Engine {
 
 		UUID getUUID() { return GetComponent<MetaDataComponent>().uuid; }
 		std::string getName() { return GetComponent<MetaDataComponent>().name; }
+
+		void setParent(Entity parent) {
+			if (parent.m_EntityHandler == m_EntityHandler) {
+				EG_CORE_ERROR("Cannot parent entity to itself");
+				return;
+			}
+			GetComponent<MetaDataComponent>().parent = parent.getUUID();
+			parent.GetComponent<MetaDataComponent>().children.push_back(getUUID());
+		}
+		Entity getParent() { return m_Scene->GetEntity(GetComponent<MetaDataComponent>().parent); }
+
+		void addChild(Entity child) {
+			if (child.m_EntityHandler == m_EntityHandler)
+			{
+				EG_CORE_ERROR("Cannot parent entity to itself");
+				return;
+			}
+			GetComponent<MetaDataComponent>().children.push_back(child.getUUID()); 
+			child.GetComponent<MetaDataComponent>().parent = getUUID();
+		}
 	private:
 		entt::entity m_EntityHandler{ entt::null };
 		Scene* m_Scene = nullptr;
