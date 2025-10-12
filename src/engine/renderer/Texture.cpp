@@ -35,12 +35,6 @@ namespace Engine {
 		m_TexCoords[1] = { max.x, min.y };
 		m_TexCoords[2] = { max.x, max.y };
 		m_TexCoords[3] = { min.x, max.y };
-
-		m_FlippedTexCoords[0] = m_TexCoords[1];
-		m_FlippedTexCoords[1] = m_TexCoords[0];
-		m_FlippedTexCoords[2] = m_TexCoords[3];
-		m_FlippedTexCoords[3] = m_TexCoords[2];
-
 		glm::vec2 cellsize = { (min.x * texture->getWidth()) / coords.x, (min.y * texture->getHeight()) / coords.y };
 		m_SpriteSize = { ((max.x * texture->getWidth()) / cellsize.x) - coords.x, ((max.y * texture->getHeight()) / cellsize.y) - coords.y };
 	}

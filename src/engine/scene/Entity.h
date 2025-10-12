@@ -51,24 +51,37 @@ namespace Engine {
 		UUID getUUID() { return GetComponent<MetaDataComponent>().uuid; }
 		std::string getName() { return GetComponent<MetaDataComponent>().name; }
 
-		void setParent(Entity parent) {
+		Entity setParent(Entity parent) {
 			if (parent.m_EntityHandler == m_EntityHandler) {
 				EG_CORE_ERROR("Cannot parent entity to itself");
-				return;
+				// Return root on error
+				return m_Scene->GetEntity(0);
 			}
 			GetComponent<MetaDataComponent>().parent = parent.getUUID();
 			parent.GetComponent<MetaDataComponent>().children.push_back(getUUID());
+
+			return parent;
 		}
 		Entity getParent() { return m_Scene->GetEntity(GetComponent<MetaDataComponent>().parent); }
 
-		void addChild(Entity child) {
+		Entity addChild(Entity child) {
 			if (child.m_EntityHandler == m_EntityHandler)
 			{
 				EG_CORE_ERROR("Cannot parent entity to itself");
-				return;
+				// Return root on error
+				return m_Scene->GetEntity(0);
 			}
 			GetComponent<MetaDataComponent>().children.push_back(child.getUUID()); 
 			child.GetComponent<MetaDataComponent>().parent = getUUID();
+			return child;
+		}
+
+		glm::vec3 GetPosition() {
+			if (GetComponent<MetaDataComponent>().parent == getUUID())
+				return GetComponent<TransformComponent>().position;
+
+			return m_Scene->GetEntity(GetComponent<MetaDataComponent>().parent).GetPosition()
+				+ GetComponent<TransformComponent>().position;
 		}
 	private:
 		entt::entity m_EntityHandler{ entt::null };

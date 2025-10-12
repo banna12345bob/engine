@@ -25,15 +25,9 @@ namespace Engine {
 	class Texture2D : public Texture
 	{
 	public:
-		virtual const glm::vec2* getTextureCoords() const override {
-			if (m_Flipped)
-				return m_FlippedTexCoords;
-			return m_TexCoords;
-		}
+		virtual const glm::vec2* getTextureCoords() const override { return m_TexCoords; }
 
 		virtual bool isSubTexture() { return false; }
-
-		virtual void flipAcrossYAxis(bool value) { m_Flipped = value; }
 
 		static Ref<Texture2D> Create(const uint32_t width, const uint32_t height);
 		static Ref<Texture2D> Create(const std::string& path);
@@ -44,13 +38,6 @@ namespace Engine {
 			{ 1.0f, 1.0f },
 			{ 0.0f, 1.0f }
 		};
-		glm::vec2 m_FlippedTexCoords[4] = {
-			{ 1.0f, 0.0f },
-			{ 0.0f, 0.0f },
-			{ 0.0f, 1.0f },
-			{ 1.0f, 1.0f }
-		};
-		bool m_Flipped = false;
 	};
 
 	class SubTexture2D : public Texture2D
@@ -61,11 +48,7 @@ namespace Engine {
 		virtual uint32_t getWidth() const override { return m_Texture->getWidth(); }
 		virtual uint32_t getHeight() const override { return m_Texture->getHeight(); }
 		virtual std::string getFilePath() const override { return m_Texture->getFilePath(); }
-		virtual const glm::vec2* getTextureCoords() const override {
-			if (m_Flipped)
-				return m_FlippedTexCoords;
-			return m_TexCoords; }
-		virtual void flipAcrossYAxis(bool value) override { m_Flipped = value;	}
+		virtual const glm::vec2* getTextureCoords() const override { return m_TexCoords; }
 
 		virtual bool isSubTexture() override { return true; }
 
@@ -82,9 +65,7 @@ namespace Engine {
 		Ref<Texture2D> m_Texture;
 
 		glm::vec2 m_TexCoords[4];
-		glm::vec2 m_FlippedTexCoords[4];
 		glm::vec2 m_SpriteSize;
-		bool m_Flipped = false;
 	};
 }
 

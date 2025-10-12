@@ -20,8 +20,11 @@ namespace Engine {
 
 		virtual void UpdateScene(Timestep ts);
 		void RenderScene();
+
 		Entity AddEntity(const std::string& name);
 		Entity AddEntityWithUUID(UUID uuid, const std::string& name, bool isChildOfRoot = true);
+
+		Entity GetEntity(int uuid);
 		Entity GetEntity(UUID uuid);
 		Entity GetEntity(std::string name);
 		bool RemoveEntity(Entity entity);

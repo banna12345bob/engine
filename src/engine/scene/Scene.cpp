@@ -14,7 +14,7 @@ namespace Engine {
 	{
 		AddEntityWithUUID(UUID(0), "ROOT", false);
 		GetEntity(UUID(0)).GetComponent<MetaDataComponent>().hide = true;
-		GetEntity(UUID(0)).GetComponent<MetaDataComponent>().parent = UUID(-1);
+		GetEntity(UUID(0)).GetComponent<MetaDataComponent>().parent = UUID(0);
 	}
 
 	Scene::~Scene()
@@ -41,14 +41,6 @@ namespace Engine {
 			NSC.Instance->OnUpdate(ts);
 		}
 
-		for (auto it = m_Entities.begin(); it != m_Entities.end(); it++)
-		{
-			Entity entity{ it->second, this };
-
-			// TODO: Figure out how to do local transformations
-			//entity.GetComponent<TransformComponent>().position = GetEntity(entity.GetComponent<MetaDataComponent>().parent).GetComponent<TransformComponent>().position;
-		}
-
 		if (B2_IS_NULL(m_Box2dWorldID))
 			StartPhysicsWorld();
 
@@ -65,7 +57,7 @@ namespace Engine {
 			{
 				SetUpPhysicsEntity(entity);
 			}
-			transform.position = { b2Body_GetPosition(rb2d.Box2DBodyID).x, b2Body_GetPosition(rb2d.Box2DBodyID).y, transform.position.z };
+			transform.position = { b2Body_GetPosition(rb2d.Box2DBodyID).x, b2Body_GetPosition(rb2d.Box2DBodyID).y, entity.GetPosition().z};
 			transform.rotation = glm::degrees(b2Rot_GetAngle(b2Body_GetRotation(rb2d.Box2DBodyID)));
 		}
 	}
@@ -76,16 +68,17 @@ namespace Engine {
 		EG_ASSERT(m_PrimaryCamera != 0, "Haven't set scene camera");
 		Renderer2D::BeginScene(GetEntity(m_PrimaryCamera).GetComponent<OrthographicCameraComponent>().camera);
 		auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-		for (auto entity : group)
+		for (auto entityID : group)
 		{
-			if (Entity{ entity, this }.GetComponent<MetaDataComponent>().hide)
+			Entity entity = Entity{ entityID, this };
+			if (entity.GetComponent<MetaDataComponent>().hide)
 				continue;
 
-			auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+			auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entityID);
 			if (sprite.texture)
-				Renderer2D::DrawQuad(transform.position, transform.scale, transform.rotation, sprite.texture, sprite.colour, sprite.tilingFactor);
+				Renderer2D::DrawQuad(entity.GetPosition(), transform.scale, transform.rotation, sprite.texture, sprite.colour, sprite.tilingFactor);
 			else
-				Renderer2D::DrawQuad(transform.position, transform.scale, transform.rotation, sprite.colour);
+				Renderer2D::DrawQuad(entity.GetPosition(), transform.scale, transform.rotation, sprite.colour);
 		}
 
 		Renderer2D::EndScene();
@@ -109,6 +102,11 @@ namespace Engine {
 			GetEntity(UUID(0)).addChild(entity);
 
 		return entity;
+	}
+
+	Entity Scene::GetEntity(int uuid)
+	{
+		return GetEntity(UUID(uuid));
 	}
 
 	Entity Scene::GetEntity(UUID uuid)

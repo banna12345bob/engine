@@ -22,6 +22,12 @@ namespace Engine {
 		Scene* GetScene() {
 			return m_Entity.m_Scene;
 		}
+
+		Entity GetEntity() { return m_Entity; }
+
+		Entity GetParent() { return m_Entity.getParent(); }
+		Entity SetParent(Entity entity) { return m_Entity.setParent(entity); }
+		Entity AddChild(Entity entity) { return m_Entity.addChild(entity); }
 	protected:
 		virtual void OnCreate() {}
 		virtual void OnDestroy() {}
