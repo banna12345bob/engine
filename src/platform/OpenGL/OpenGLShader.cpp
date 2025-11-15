@@ -136,6 +136,9 @@ namespace Engine {
 			glShaderIDs[glShaderIDIndex++] = shader;
 		}
 
+		if (!compiled)
+			return;
+
 		// Link our program
 		glLinkProgram(program);
 
