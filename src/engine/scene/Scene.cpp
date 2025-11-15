@@ -264,7 +264,7 @@ namespace Engine {
 	template<>
 	void Scene::OnComponentAdded<VelocityComponent>(Entity Entity, VelocityComponent& component)
 	{
-		EG_CORE_FATAL("VelocityComponent: Very extreamly depricated");
+		EG_CORE_ASSERT(false, "VelocityComponent: Very extreamly depricated");
 	}
 
 }
